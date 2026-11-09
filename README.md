@@ -1,4 +1,4 @@
-## Pay Flow AI Review
+## Pay Flow AI Platform
 
 PayFlow AI is an intelligent financial operations platform that turns a passive PayPal ledger into a proactive decision engine. It automatically categorizes transactions using zero-shot NLP, forecasts cash flow 30 days out, detects fraud in real time through webhook-triggered risk scoring, and drafts professional dispute responses using a large language model. It's open-source, self-hostable, and built with enterprise-grade security and observability. 
 
