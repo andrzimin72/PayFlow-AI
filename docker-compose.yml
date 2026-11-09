@@ -1,0 +1,338 @@
+# =============================================================================
+# PayFlow AI - Docker Compose Configuration
+# =============================================================================
+# This is the main Docker Compose file with support for multiple profiles:
+#
+# Profiles:
+#   - (default): Core application services
+#   - dev: Development tools and hot reload
+#   - prod: Production optimizations
+#   - monitoring: Prometheus, Grafana, Jaeger
+#   - data: Elasticsearch, Kibana
+#
+# Usage:
+#   docker compose up                    # Start core services
+#   docker compose --profile dev up      # Start with dev tools
+#   docker compose --profile prod up     # Start in production mode
+#   docker compose --profile monitoring up  # Start monitoring stack
+#   docker compose --profile data up     # Start data services
+# =============================================================================
+
+version: '3.8'
+
+# =============================================================================
+# NETWORKS
+# =============================================================================
+networks:
+  payflow-network:
+    driver: bridge
+    name: payflow-network
+  
+  monitoring-network:
+    driver: bridge
+    name: monitoring-network
+
+# =============================================================================
+# VOLUMES
+# =============================================================================
+volumes:
+  elasticsearch-data:
+    driver: local
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+
+# =============================================================================
+# SERVICES
+# =============================================================================
+services:
+  
+  # ---------------------------------------------------------------------------
+  # PayFlow AI - REST API
+  # ---------------------------------------------------------------------------
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        ENVIRONMENT: ${ENVIRONMENT:-production}
+    image: payflow-ai:latest
+    container_name: payflow-api
+    environment:
+      - SERVICE=api
+      - ENVIRONMENT=${ENVIRONMENT:-production}
+      - PORT=8000
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - ES_HOST=http://elasticsearch:9200
+      - PAYPAL_CLIENT_ID=${PAYPAL_CLIENT_ID}
+      - PAYPAL_SECRET=${PAYPAL_SECRET}
+      - HF_TOKEN=${HF_TOKEN}
+      - PAYPAL_WEBHOOK_ID=${PAYPAL_WEBHOOK_ID}
+    ports:
+      - "8000:8000"
+    networks:
+      - payflow-network
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "/healthcheck.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    profiles:
+      - default
+      - dev
+      - prod
+
+  # ---------------------------------------------------------------------------
+  # PayFlow AI - Streamlit Dashboard
+  # ---------------------------------------------------------------------------
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: payflow-ai:latest
+    container_name: payflow-app
+    environment:
+      - SERVICE=app
+      - ENVIRONMENT=${ENVIRONMENT:-production}
+      - PORT=8501
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - ES_HOST=http://elasticsearch:9200
+      - PAYPAL_CLIENT_ID=${PAYPAL_CLIENT_ID}
+      - PAYPAL_SECRET=${PAYPAL_SECRET}
+      - HF_TOKEN=${HF_TOKEN}
+    ports:
+      - "8501:8501"
+    networks:
+      - payflow-network
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "/healthcheck.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    profiles:
+      - default
+      - dev
+      - prod
+
+  # ---------------------------------------------------------------------------
+  # PayFlow AI - Webhook Listener
+  # ---------------------------------------------------------------------------
+  webhook:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: payflow-ai:latest
+    container_name: payflow-webhook
+    environment:
+      - SERVICE=webhook
+      - ENVIRONMENT=${ENVIRONMENT:-production}
+      - PORT=8001
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - ES_HOST=http://elasticsearch:9200
+      - PAYPAL_CLIENT_ID=${PAYPAL_CLIENT_ID}
+      - PAYPAL_SECRET=${PAYPAL_SECRET}
+      - PAYPAL_WEBHOOK_ID=${PAYPAL_WEBHOOK_ID}
+      - ZAPIER_WEBHOOK_URL=${ZAPIER_WEBHOOK_URL}
+      - NGROK_AUTH_TOKEN=${NGROK_AUTH_TOKEN}
+    ports:
+      - "8001:8001"
+    networks:
+      - payflow-network
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "/healthcheck.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    profiles:
+      - default
+      - dev
+      - prod
+
+  # ---------------------------------------------------------------------------
+  # Elasticsearch (Data Layer)
+  # ---------------------------------------------------------------------------
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.1
+    container_name: payflow-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - cluster.name=payflow-cluster
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - payflow-network
+      - monitoring-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+    profiles:
+      - default
+      - dev
+      - prod
+      - data
+
+  # ---------------------------------------------------------------------------
+  # Kibana (Elasticsearch UI) - Dev/Data Profile Only
+  # ---------------------------------------------------------------------------
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.1
+    container_name: payflow-kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - SERVER_NAME=kibana
+      - XPACK_SECURITY_ENABLED=false
+    ports:
+      - "5601:5601"
+    networks:
+      - payflow-network
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    restart: unless-stopped
+    profiles:
+      - dev
+      - data
+
+  # ---------------------------------------------------------------------------
+  # Prometheus (Metrics Collection) - Monitoring Profile
+  # ---------------------------------------------------------------------------
+  prometheus:
+    image: prom/prometheus:v2.48.1
+    container_name: payflow-prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=15d'
+      - '--web.enable-lifecycle'
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/alert_rules.yml:/etc/prometheus/alert_rules.yml:ro
+      - prometheus-data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    profiles:
+      - monitoring
+
+  # ---------------------------------------------------------------------------
+  # Grafana (Visualization) - Monitoring Profile
+  # ---------------------------------------------------------------------------
+  grafana:
+    image: grafana/grafana:10.2.3
+    container_name: payflow-grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin123}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=http://localhost:3000
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+    ports:
+      - "3000:3000"
+    networks:
+      - monitoring-network
+    depends_on:
+      - prometheus
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    profiles:
+      - monitoring
+
+  # ---------------------------------------------------------------------------
+  # Jaeger (Distributed Tracing) - Monitoring Profile
+  # ---------------------------------------------------------------------------
+  jaeger:
+    image: jaegertracing/all-in-one:1.53
+    container_name: payflow-jaeger
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+      - COLLECTOR_ZIPKIN_HOST_PORT=:9411
+    ports:
+      - "16686:16686"   # Jaeger UI
+      - "4317:4317"     # OTLP gRPC
+      - "4318:4318"     # OTLP HTTP
+    networks:
+      - monitoring-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:16686/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    profiles:
+      - monitoring

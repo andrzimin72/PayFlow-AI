@@ -1,0 +1,65 @@
+# =============================================================================
+# Docker Compose Development Overrides
+# =============================================================================
+# This file is automatically loaded by Docker Compose in addition to
+# docker-compose.yml. It provides development-specific configurations.
+#
+# Features:
+# - Volume mounts for hot reload
+# - Debug environment variables
+# - Relaxed resource limits
+# - Development tools enabled
+# =============================================================================
+
+version: '3.8'
+
+services:
+  # Override API service for development
+  api:
+    environment:
+      - ENVIRONMENT=development
+      - LOG_LEVEL=DEBUG
+      - PYTHONUNBUFFERED=1
+    volumes:
+      # Mount source code for hot reload
+      - .:/app
+      # Exclude virtual environment and cache
+      - /app/__pycache__
+      - /app/.pytest_cache
+    command: >
+      uvicorn api:app
+      --host 0.0.0.0
+      --port 8000
+      --reload
+      --reload-dir /app
+      --log-level debug
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 4G
+
+  # Override Streamlit app for development
+  app:
+    environment:
+      - ENVIRONMENT=development
+      - LOG_LEVEL=DEBUG
+    volumes:
+      - .:/app
+      - /app/__pycache__
+    command: >
+      streamlit run app.py
+      --server.port 8501
+      --server.address 0.0.0.0
+      --server.headless false
+      --browser.gatherUsageStats true
+      --logger.level debug
+
+  # Override webhook listener for development
+  webhook:
+    environment:
+      - ENVIRONMENT=development
+      - LOG_LEVEL=DEBUG
+    volumes:
+      - .:/app
+      - /app/__pycache__

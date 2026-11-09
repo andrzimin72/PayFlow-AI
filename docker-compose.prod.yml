@@ -1,0 +1,103 @@
+# =============================================================================
+# Docker Compose Production Overrides
+# =============================================================================
+# Usage: docker compose -f docker-compose.yml -f docker-compose.prod.yml up
+#
+# Features:
+# - Optimized resource limits
+# - Production environment variables
+# - No hot reload
+# - Strict security settings
+# =============================================================================
+
+version: '3.8'
+
+services:
+  # Production API configuration
+  api:
+    environment:
+      - ENVIRONMENT=production
+      - LOG_LEVEL=WARNING
+    command: >
+      uvicorn api:app
+      --host 0.0.0.0
+      --port 8000
+      --workers 4
+      --log-level warning
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '1.0'
+          memory: 1G
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Production Streamlit configuration
+  app:
+    environment:
+      - ENVIRONMENT=production
+      - LOG_LEVEL=WARNING
+    command: >
+      streamlit run app.py
+      --server.port 8501
+      --server.address 0.0.0.0
+      --server.headless true
+      --browser.gatherUsageStats false
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '1.0'
+          memory: 1G
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Production webhook configuration
+  webhook:
+    environment:
+      - ENVIRONMENT=production
+      - LOG_LEVEL=WARNING
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Production Elasticsearch configuration
+  elasticsearch:
+    environment:
+      - ES_JAVA_OPTS=-Xms2g -Xmx2g
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+        reservations:
+          memory: 2G
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
