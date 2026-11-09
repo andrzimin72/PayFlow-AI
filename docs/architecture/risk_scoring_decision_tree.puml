@@ -1,0 +1,207 @@
+@startuml risk_scoring_decision_tree
+skinparam dpi 150
+skinparam shadowing false
+skinparam roundCorner 8
+skinparam defaultTextAlignment center
+
+skinparam activity {
+    BackgroundColor #FFFFFF
+    BorderColor #37474F
+    FontSize 10
+    ArrowColor #37474F
+}
+
+skinparam activityDiamond {
+    BackgroundColor #FFF9C4
+    BorderColor #F57F17
+}
+
+skinparam note {
+    BackgroundColor #E3F2FD
+    BorderColor #1565C0
+    FontSize 9
+}
+
+title Risk Scoring Decision Tree\n<font size=11 color=gray>Exact Logic of risk_engine.calculate_risk_score()</font>
+
+start
+
+:Receive Inputs;
+
+note right
+  <font face=Courier size=9>
+  anomaly_score: float (0.0-1.0)
+  ai_confidence: float (0.0-1.0)
+  amount: float (transaction value)
+  avg_amount: float (portfolio mean)
+  </font>
+end note
+
+' ===========================================================================
+' STEP 1: INPUT CLAMPING
+' ===========================================================================
+partition "**Step 1: Input Validation & Clamping**" #E3F2FD {
+    :Clamp anomaly_score to [0.0, 1.0];
+    :Clamp ai_confidence to [0.0, 1.0];
+    
+    if (avg_amount > 0?) then (yes)
+        :amount_factor = min(1.0, amount / (avg_amount * 5));
+        note right
+          If amount = 5x average or more,
+          factor caps at 1.0
+        end note
+    else (no)
+        :amount_factor = 0.5;
+        note right
+          No historical data available,
+          use neutral default
+        end note
+    endif
+}
+
+' ===========================================================================
+' STEP 2: COMPUTE THREE FACTORS
+' ===========================================================================
+partition "**Step 2: Compute Three Risk Factors**" #E8F5E9 {
+    
+    fork
+        :<b>Anomaly Factor</b>\nanomaly_factor = anomaly_score\n(0.0-1.0, higher = more anomalous);
+        note right
+          <font size=9>
+          <b>Weight: 50%</b>
+          Source: Isolation Forest
+          anomaly_score from
+          anomaly_detector.py
+          </font>
+        end note
+    fork again
+        :<b>AI Uncertainty Factor</b>\nai_uncertainty = 1.0 - ai_confidence\n(0.0-1.0, higher = less confident);
+        note left
+          <font size=9>
+          <b>Weight: 30%</b>
+          Inverted confidence:
+          Low confidence = High
+          uncertainty = High risk
+          </font>
+        end note
+    fork again
+        :<b>Financial Impact Factor</b>\namount_factor (0.0-1.0, higher = larger relative to average);
+        note right
+          <font size=9>
+          <b>Weight: 20%</b>
+          Measures how unusual
+          the transaction size is
+          compared to typical
+          </font>
+        end note
+    end fork
+}
+
+' ===========================================================================
+' STEP 3: WEIGHTED COMBINATION
+' ===========================================================================
+partition "**Step 3: Weighted Combination**" #FFF3E0 {
+    :Compute raw_score =\n(0.50 × anomaly_factor) +\n(0.30 × ai_uncertainty) +\n(0.20 × amount_factor);
+    
+    note right
+      <font face=Courier size=9>
+      raw_score ∈ [0.0, 1.0]
+      
+      Example:
+      anomaly = 0.8
+      uncertainty = 0.4
+      amount = 0.6
+      
+      raw = (0.5×0.8) + (0.3×0.4) + (0.2×0.6)
+          = 0.40 + 0.12 + 0.12
+          = 0.64
+      </font>
+    end note
+    
+    :Scale to 0-100:\nfinal_score = raw_score × 100\nRound to 1 decimal place;
+}
+
+' ===========================================================================
+' STEP 4: RISK LEVEL MAPPING
+' ===========================================================================
+partition "**Step 4: Map to Risk Level**" #FFEBEE {
+    
+    if (final_score >= 80?) then (yes)
+        :<b>CRITICAL</b>\nRisk Level: CRITICAL\nColor: #dc3545 (red)\nAction: HOLD_AND_INVESTIGATE;
+        note right
+          Transaction frozen.
+          Immediate investigation
+          required. Alert sent to
+          Zapier → Email/Slack.
+        end note
+    else (no)
+        if (final_score >= 60?) then (yes)
+            :<b>HIGH</b>\nRisk Level: HIGH\nColor: #fd7e14 (orange)\nAction: MANUAL_REVIEW;
+            note right
+              Requires human review
+              before further processing.
+              Alert sent to Zapier.
+            end note
+        else (no)
+            if (final_score >= 40?) then (yes)
+                :<b>MEDIUM</b>\nRisk Level: MEDIUM\nColor: #ffc107 (yellow)\nAction: MONITOR;
+                note right
+                  Flagged for passive
+                  monitoring. Patterns
+                  reviewed periodically.
+                end note
+            else (no)
+                :<b>LOW</b>\nRisk Level: LOW\nColor: #28a745 (green)\nAction: AUTO_APPROVE;
+                note right
+                  No human action needed.
+                  Transaction proceeds
+                  normally.
+                end note
+            endif
+        endif
+    endif
+}
+
+' ===========================================================================
+' STEP 5: RETURN RESULT
+' ===========================================================================
+partition "**Step 5: Return Result**" #E8F5E9 {
+    :Return dictionary with:\n- risk_score (0-100)\n- risk_level (LOW/MEDIUM/HIGH/CRITICAL)\n- risk_color (hex code)\n- recommended_action (enum)\n- action_description (string);
+}
+
+stop
+
+' ===========================================================================
+' LEGEND
+' ===========================================================================
+legend right
+  |= Color |= Stage |
+  | <#E3F2FD> | Input validation |
+  | <#E8F5E9> | Factor computation |
+  | <#FFF3E0> | Weighted combination |
+  | <#FFEBEE> | Risk level mapping |
+  | <#E8F5E9> | Output |
+  
+  |= Weight |= Factor |
+  | 50% | Anomaly (Isolation Forest) |
+  | 30% | AI Uncertainty (1 - confidence) |
+  | 20% | Financial Impact (amount vs avg) |
+endlegend
+
+note bottom of partition3
+  <b>Key Design Decisions:</b>
+  
+  1. <b>Anomaly gets highest weight (50%)</b> because statistical
+     outliers are the strongest fraud signal.
+  
+  2. <b>AI uncertainty is inverted</b> because low confidence
+     indicates the model is unsure, which is risky.
+  
+  3. <b>Amount factor is capped at 5x average</b> to prevent
+     extreme outliers from dominating the score.
+  
+  4. <b>Risk thresholds are configurable</b> via environment
+     variables (RISK_SCORE_THRESHOLD).
+end note
+
+@enduml

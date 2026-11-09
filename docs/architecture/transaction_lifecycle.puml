@@ -1,0 +1,210 @@
+@startuml transaction_lifecycle
+skinparam dpi 150
+skinparam shadowing false
+skinparam roundCorner 10
+skinparam defaultTextAlignment center
+
+skinparam state {
+    BackgroundColor #FFFFFF
+    BorderColor #37474F
+    FontSize 11
+    ArrowColor #37474F
+    ArrowFontSize 10
+}
+
+skinparam note {
+    BackgroundColor #FFF9C4
+    BorderColor #F57F17
+    FontSize 10
+}
+
+title Transaction Lifecycle in PayFlow AI\n<font size=11 color=gray>(State transitions for a single transaction)</font>
+
+' ===========================================================================
+' ENTRY: Transaction originates in PayPal
+' ===========================================================================
+[*] --> External : Transaction occurs\nin PayPal Sandbox
+
+state "① External System" as External #E3F2FD {
+    state "In PayPal\n(raw event exists)" as InPayPal
+}
+
+' ===========================================================================
+' TWO ENTRY PATHS into our system
+' ===========================================================================
+External --> WebhookReceived : PayPal webhook\nPOST /paypal-webhook
+External --> BatchFetched : User clicks\n"Fetch & Analyze"
+
+' ===========================================================================
+' PATH A: Real-time webhook (with security gate)
+' ===========================================================================
+state "Path A: Real-Time Webhook" as WebhookPath #FFF3E0 {
+    state "Webhook Received" as WebhookReceived
+    state "Signature\nVerification" as SigCheck <<choice>>
+    state "❌ REJECTED\n(401 + audit log)" as Rejected #FFCDD2
+
+    WebhookReceived --> SigCheck
+    SigCheck --> Rejected : invalid signature\nor replay detected
+    SigCheck --> RawIngested : ✅ valid
+}
+
+' ===========================================================================
+' PATH B: Batch fetch (no signature needed — trusted pull)
+' ===========================================================================
+state "Path B: Batch Fetch" as BatchPath #E8F5E9 {
+    state "Batch Fetched\nfrom PayPal API" as BatchFetched
+    BatchFetched --> RawIngested
+}
+
+' ===========================================================================
+' COMMON PROCESSING PIPELINE
+' ===========================================================================
+state "Common Processing Pipeline" as Common #E8F5E9 {
+
+    state "② Raw Ingested" as RawIngested #E3F2FD
+    note right of RawIngested
+        PayPal JSON payload stored
+        in memory. Fields extracted:
+        description, amount, currency,
+        status, transaction_id.
+    end note
+
+    state "③ AI Categorized" as Categorized #E8F5E9
+    note right of Categorized
+        Zero-shot NLP (BART-large-mnli)
+        assigns one of 4 categories
+        + confidence score (0.0–1.0).
+    end note
+
+    state "④ Indexed" as Indexed #F3E5F5
+    note right of Indexed
+        Stored in Elasticsearch with
+        optimized mappings. Document
+        ID = description_amount_currency.
+    end note
+
+    state "⑤ Anomaly Scored" as AnomalyScored #FFEBEE
+    note right of AnomalyScored
+        Isolation Forest computes
+        anomaly_score (0.0–1.0)
+        based on 4 features.
+    end note
+
+    state "⑥ Risk Scored" as RiskScored #FFEBEE
+    note right of RiskScored
+        Weighted composite:
+        50% anomaly + 30% AI
+        uncertainty + 20% amount.
+        Score: 0–100.
+    end note
+
+    state "Risk Level\nDecision" as RiskDecision <<choice>>
+
+    RawIngested --> Categorized : classify()
+    Categorized --> Indexed : bulk index\n+ add indexed_at
+    Indexed --> AnomalyScored : detect_anomalies()
+    AnomalyScored --> RiskScored : calculate_risk_score()
+    RiskScored --> RiskDecision
+}
+
+' ===========================================================================
+' RISK LEVEL DECISION → ACTION STATES
+' ===========================================================================
+state "⑦ Final Action State" as Actions #FFF9C4 {
+
+    state "✅ AUTO_APPROVED\n(Low risk: 0–39)" as AutoApproved #C8E6C9
+    note bottom of AutoApproved
+        No human action needed.
+        Transaction proceeds normally.
+    end note
+
+    state "👁️ MONITORED\n(Medium risk: 40–59)" as Monitored #FFF9C4
+    note bottom of Monitored
+        Flagged for passive monitoring.
+        Patterns reviewed periodically.
+    end note
+
+    state "🔍 UNDER_REVIEW\n(High risk: 60–79)" as UnderReview #FFE0B2
+    note bottom of UnderReview
+        Requires human review before
+        further processing. Alert sent.
+    end note
+
+    state "🛑 HELD & INVESTIGATED\n(Critical risk: 80–100)" as Held #FFCDD2
+    note bottom of Held
+        Transaction frozen. Immediate
+        investigation required. Alert sent.
+    end note
+
+    RiskDecision --> AutoApproved : score < 40
+    RiskDecision --> Monitored : 40 ≤ score < 60
+    RiskDecision --> UnderReview : 60 ≤ score < 80
+    RiskDecision --> Held : score ≥ 80
+}
+
+' ===========================================================================
+' SIDE EFFECT: Alert to Zapier for high-risk transactions
+' ===========================================================================
+state "Side Effect: Alert" as Alert #F8BBD0 {
+    state "📧 Alert Sent\n(via Zapier)" as Alerted
+    UnderReview --> Alerted : risk ≥ 60
+    Held --> Alerted : risk ≥ 80
+}
+
+' ===========================================================================
+' PARALLEL PATH: Generative summary (for batch only)
+' ===========================================================================
+state "Parallel: Narrative Summary" as Summary #FCE4EC {
+    state "📝 AI Summary\nGenerated" as Summarized
+    note right of Summarized
+        Mistral-7B generates
+        2-3 sentence financial
+        narrative from the
+        categorized DataFrame.
+        Runs only in batch path.
+    end note
+}
+
+Categorized --> Summarized : batch path only\n(async, non-blocking)
+
+' ===========================================================================
+' TERMINAL STATES
+' ===========================================================================
+AutoApproved --> [*]
+Monitored --> [*]
+UnderReview --> [*]
+Held --> [*]
+Rejected --> [*]
+Alerted --> [*]
+Summarized --> [*]
+
+' ===========================================================================
+' LEGEND
+' ===========================================================================
+legend right
+    |= Color |= State Type |
+    | <#E3F2FD> | Input / Ingested |
+    | <#E8F5E9> | Processing |
+    | <#F3E5F5> | Persisted |
+    | <#FFEBEE> | Scored |
+    | <#C8E6C9> | ✅ Approved (Low risk) |
+    | <#FFF9C4> | 👁️ Monitored (Medium) |
+    | <#FFE0B2> | 🔍 Under Review (High) |
+    | <#FFCDD2> | 🛑 Held / Rejected |
+    | <#F8BBD0> | 📧 Alert side-effect |
+    | <#FCE4EC> | 📝 Parallel narrative |
+endlegend
+
+note bottom of Common
+    **Deterministic pipeline**: Every transaction
+    passes through exactly these 5 processing
+    states in order. No state is skipped.
+end note
+
+note top of Actions
+    **Risk thresholds are configurable** via
+    environment variables (RISK_SCORE_THRESHOLD).
+    Default values shown here.
+end note
+
+@enduml
