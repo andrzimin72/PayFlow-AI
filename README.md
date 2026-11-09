@@ -46,7 +46,7 @@ e) Accounting Firms: As a white-labeled tool to provide clients with real-time f
 
 ### 6. For which tasks is it best suited, and for which is it NOT recommended?
 
-6.1. Best Suited For:
+#### 6.1. Best Suited For:
 
 a) Pattern recognition in descriptive text (e.g., mapping «Starbucks» to «Personal Expense»).
 
@@ -56,7 +56,7 @@ c) Early-warning risk detection (flagging anomalies for human review).
 
 d) Drafting first-pass responses to customer disputes.
 
-6.2. NOT Recommended For:
+#### 6.2. NOT Recommended For:
 
 a) High-Frequency Trading or Enterprise Banking: It is not built for millions of transactions per second (requires Kafka/distributed streaming).
 
@@ -132,7 +132,7 @@ d) Dispute Recovery: AI-assisted, professional dispute responses increase the wi
 
 However, if we tried to sell this tomorrow to a mid-sized business as a live, production SaaS product, it would face harsh realities. Here is the unvarnished truth about the limitations and the gap between this project and an enterprise-grade Fintech product.
 
-13.1. The Scale & Architecture Reality Check
+#### 13.1. The Scale & Architecture Reality Check
 
 a) The Monolith Bottleneck: We built a «modular monolith». This is perfect for 10 to 10,000 transactions a day. But if a user processes 100,000 transactions a day, the shared Python process will bottleneck. The AI inference and bulk Elasticsearch indexing will block the webhook listener, causing PayPal to retry and eventually drop events.
 
@@ -140,7 +140,7 @@ b) Elasticsearch Single Node: We are running a single-node Elasticsearch instanc
 
 c) Synchronous Processing: The webhook listener processes the AI categorization and risk scoring synchronously before returning a 200 OK to PayPal. If the Hugging Face API is slow (which it often is), the webhook takes 3-5 seconds to respond. PayPal might timeout and retry, causing duplicate processing.
 
-13.2. The AI & Machine Learning Reality Check
+#### 13.2. The AI & Machine Learning Reality Check
 
 a) The «Cold Start» Problem: Isolation Forest (anomaly detection) and Prophet (forecasting) are statistically meaningless with fewer than 30–50 data points. A new user signing up will get garbage forecasts and zero anomaly detection until they build up months of history.
 
@@ -148,7 +148,7 @@ b) Zero-Shot NLP Limitations: bart-large-mnli is great, but it struggles with sa
 
 c) LLM Rate Limits & Costs: We are using the free/cheap Hugging Face Inference API for Mistral-7B. In production, this has strict rate limits. If 50 users click «Generate Summary» at the same time, the API will throttle you, and the dashboard will throw 503 errors. A real product needs a dedicated GPU instance or a paid enterprise API (like OpenAI or AWS Bedrock).
 
-13.3. The Security & Compliance Reality Check (The Biggest Gap)
+#### 13.3. The Security & Compliance Reality Check (The Biggest Gap)
 
 a) No RBAC (Role-Based Access Control): Currently, if you have the dashboard URL or the API key, you can see everything. A real financial platform needs strict user roles (e.g., «Viewer» can see dashboards, «Admin» can approve high-risk transactions, «Auditor» can only view logs).
 
@@ -158,7 +158,7 @@ c) GDPR / Data Privacy: We are storing transaction descriptions, amounts, and cl
 
 d) No Audit Trail: If a user manually overrides a «CRITICAL» risk score to «LOW», the system doesn't log who did it, when, or why. Financial regulators require immutable audit logs for every state change.
 
-13.4. The Operational Reality Check
+#### 13.4. The Operational Reality Check
 
 a) No Disaster Recovery (DR): If the server burns down, we have no automated database backups. We would lose all indexed transaction history.
 
