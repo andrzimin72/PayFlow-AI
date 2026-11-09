@@ -1,4 +1,4 @@
-# 🚀 PayFlow AI — Quick Start Guide
+## 🚀 PayFlow AI — Quick Start Guide
 
 **Get up and running in 5 to 30 minutes.**
 
@@ -11,11 +11,11 @@ This guide walks you through setting up PayFlow AI on your local machine. Choose
 
 ---
 
-## 📋 Prerequisites
+### 📋 Prerequisites
 
 Before you begin, make sure you have the following installed:
 
-### Required Software
+#### Required Software
 
 | Software | Version | Installation |
 |:---|:---|:---|
@@ -23,7 +23,7 @@ Before you begin, make sure you have the following installed:
 | **Docker** | 20.10+ | [docker.com](https://www.docker.com/products/docker-desktop/) |
 | **Git** | 2.30+ | [git-scm.com](https://git-scm.com/downloads) |
 
-### Verify Your Installation
+#### Verify Your Installation
 
 Run these commands to confirm everything is ready:
 
@@ -33,7 +33,7 @@ docker --version     # Should show Docker version 20.10+
 git --version        # Should show git version 2.30+
 ```
 
-### Optional (for Full Setup only)
+#### Optional (for Full Setup only)
 
 - **PayPal Developer Account** — [developer.paypal.com](https://developer.paypal.com/) (free)
 - **Hugging Face Account** — [huggingface.co](https://huggingface.co/) (free, for AI summaries)
@@ -41,20 +41,20 @@ git --version        # Should show git version 2.30+
 
 ---
 
-## 🎯 Path A: 5-Minute Demo (No Setup Required)
+### 🎯 Path A: 5-Minute Demo (No Setup Required)
 
 **Perfect for:** Quick exploration, portfolio viewing, initial impressions.
 
 This path uses synthetic data — no PayPal account, no API keys, no external services needed.
 
-### Step 1: Clone the Repository
+#### Step 1: Clone the Repository
 
 ```bash
 git clone https://github.com/yourusername/payflow-ai.git
 cd payflow-ai
 ```
 
-### Step 2: Create a Virtual Environment
+#### Step 2: Create a Virtual Environment
 
 ```bash
 python -m venv .venv
@@ -62,7 +62,7 @@ source .venv/bin/activate        # macOS / Linux
 # OR: .venv\Scripts\activate     # Windows
 ```
 
-### Step 3: Install Dependencies
+#### Step 3: Install Dependencies
 
 ```bash
 pip install --upgrade pip
@@ -71,7 +71,7 @@ pip install -r requirements-demo.txt
 
 ⏱️ *This takes 2–5 minutes. The ML libraries (PyTorch, transformers) are large.*
 
-### Step 4: Run the Terminal Demo
+#### Step 4: Run the Terminal Demo
 
 ```bash
 python demo_terminal.py
@@ -79,7 +79,7 @@ python demo_terminal.py
 
 ✅ **You should see:** A rich, color-coded terminal output walking through all platform capabilities — AI categorization, forecasting, anomaly detection, risk scoring, invoicing, and dispute resolution — all using synthetic data.
 
-### Step 5: Run the Dashboard Demo
+#### Step 5: Run the Dashboard Demo
 
 ```bash
 streamlit run demo_dashboard.py
@@ -87,19 +87,19 @@ streamlit run demo_dashboard.py
 
 ✅ **You should see:** Your browser opens to `http://localhost:8501` showing the full interactive dashboard with synthetic data.
 
-### 🎉 You're Done!
+#### 🎉 You're Done!
 
 You've just seen PayFlow AI in action. To stop the demo, press `Ctrl+C` in the terminal.
 
 ---
 
-## 🔧 Path B: 30-Minute Full Setup
+### 🔧 Path B: 30-Minute Full Setup
 
 **Perfect for:** Real development, interview preparation, contributing to the project.
 
 This path sets up the complete platform with live PayPal Sandbox integration.
 
-### Step 1: Clone and Set Up Environment
+#### Step 1: Clone and Set Up Environment
 
 ```bash
 git clone https://github.com/yourusername/payflow-ai.git
@@ -110,7 +110,7 @@ pip install --upgrade pip
 pip install -r requirements-dev.txt
 ```
 
-### Step 2: Configure Environment Variables
+#### Step 2: Configure Environment Variables
 
 ```bash
 cp .env.example .env
@@ -132,7 +132,7 @@ NGROK_AUTH_TOKEN=your_ngrok_token
 ZAPIER_WEBHOOK_URL=your_zapier_webhook_url
 ```
 
-#### Where to Get These Credentials
+##### Where to Get These Credentials
 
 | Credential | Where to Get It |
 |:---|:---|
@@ -142,7 +142,7 @@ ZAPIER_WEBHOOK_URL=your_zapier_webhook_url
 | `NGROK_AUTH_TOKEN` | [ngrok Dashboard](https://dashboard.ngrok.com/get-started/your-authtoken) |
 | `ZAPIER_WEBHOOK_URL` | Zapier → Create Zap → Webhooks by Zapier → Copy Custom Webhook URL |
 
-### Step 3: Start the Infrastructure
+#### Step 3: Start the Infrastructure
 
 Open a new terminal and start Elasticsearch:
 
@@ -162,7 +162,7 @@ curl http://localhost:9200/_cluster/health
 # Should return JSON with "status": "green" or "yellow"
 ```
 
-### Step 4: Start the Platform Services
+#### Step 4: Start the Platform Services
 
 You need **three terminals** for the three services:
 
@@ -186,7 +186,7 @@ streamlit run app.py
 ```
 ✅ Access at: `http://localhost:8501`
 
-### Step 5: Start the Monitoring Stack (Optional)
+#### Step 5: Start the Monitoring Stack (Optional)
 
 In a fourth terminal:
 
@@ -199,7 +199,7 @@ docker compose --profile monitoring up -d
 - Grafana: `http://localhost:3000` (login: `admin` / `admin123`)
 - Jaeger: `http://localhost:16686`
 
-### Step 6: Make Your First Test Transaction
+#### Step 6: Make Your First Test Transaction
 
 To populate data, you need at least one PayPal Sandbox transaction:
 
@@ -212,7 +212,7 @@ To populate data, you need at least one PayPal Sandbox transaction:
 - Open `http://localhost:8000/transactions` — you should see your transaction
 - Open `http://localhost:8501` — you should see the transaction in the dashboard
 
-### 🎉 You're Running the Full Platform!
+#### 🎉 You're Running the Full Platform!
 
 You now have:
 - ✅ Live PayPal integration
@@ -224,7 +224,7 @@ You now have:
 
 ---
 
-## ✅ Verification Checklist
+### ✅ Verification Checklist
 
 After setup, verify everything is working:
 
@@ -254,9 +254,9 @@ If all five checks pass, your setup is complete and healthy.
 
 ---
 
-## 🎓 Common Tasks
+### 🎓 Common Tasks
 
-### Fetch and Analyze Transactions
+#### Fetch and Analyze Transactions
 
 In the dashboard (`http://localhost:8501`), click the **"🚀 Fetch, Analyze & Index"** button in the sidebar. This will:
 1. Pull the last 30 days of transactions from PayPal
@@ -264,14 +264,14 @@ In the dashboard (`http://localhost:8501`), click the **"🚀 Fetch, Analyze & I
 3. Index them into Elasticsearch
 4. Generate a financial summary
 
-### Search Transactions
+#### Search Transactions
 
 In the dashboard's search bar, try queries like:
 - `Adobe` — finds software subscriptions
 - `Freelance Income` — finds all income
 - `Suspicious` — finds flagged transactions
 
-### Trigger a Webhook Manually (Testing)
+#### Trigger a Webhook Manually (Testing)
 
 ```bash
 curl -X POST http://localhost:8001/paypal-webhook \
@@ -288,13 +288,13 @@ curl -X POST http://localhost:8001/paypal-webhook \
 
 ⚠️ **Note:** Without valid PayPal signature headers, this will be rejected with 401. This is the security system working correctly!
 
-### Run Performance Benchmarks
+#### Run Performance Benchmarks
 
 ```bash
 pytest tests/performance/ -v
 ```
 
-### Generate Architecture Diagrams
+#### Generate Architecture Diagrams
 
 ```bash
 python docs/architecture/render_diagrams.py
@@ -302,9 +302,9 @@ python docs/architecture/render_diagrams.py
 
 ---
 
-## 🛠️ Troubleshooting
+### 🛠️ Troubleshooting
 
-### Issue: `ModuleNotFoundError: No module named 'torch'`
+#### Issue: `ModuleNotFoundError: No module named 'torch'`
 
 **Cause:** PyTorch installation failed or was skipped.
 
@@ -315,7 +315,7 @@ pip install torch --index-url https://download.pytorch.org/whl/cpu
 pip install torch --index-url https://download.pytorch.org/whl/cu118
 ```
 
-### Issue: Elasticsearch connection refused
+#### Issue: Elasticsearch connection refused
 
 **Cause:** Elasticsearch isn't running or isn't ready yet.
 
@@ -334,7 +334,7 @@ until curl -s http://localhost:9200/_cluster/health | grep -q "green\|yellow"; d
 done
 ```
 
-### Issue: `PAYPAL_CLIENT_ID and PAYPAL_SECRET must be set`
+#### Issue: `PAYPAL_CLIENT_ID and PAYPAL_SECRET must be set`
 
 **Cause:** The `.env` file is missing or credentials aren't filled in.
 
@@ -347,13 +347,13 @@ ls -la .env
 grep PAYPAL_CLIENT_ID .env
 ```
 
-### Issue: Dashboard shows "No data in Elasticsearch yet"
+#### Issue: Dashboard shows "No data in Elasticsearch yet"
 
 **Cause:** No transactions have been fetched yet.
 
 **Fix:** Click the **"🚀 Fetch, Analyze & Index"** button in the dashboard sidebar.
 
-### Issue: Webhook returns 401 Unauthorized
+#### Issue: Webhook returns 401 Unauthorized
 
 **Cause:** The webhook signature verification is working — it's rejecting unsigned requests. This is correct behavior!
 
@@ -361,7 +361,7 @@ grep PAYPAL_CLIENT_ID .env
 - Send a real PayPal webhook (requires live PayPal Sandbox transaction)
 - Temporarily disable verification in `webhook_listener.py` (NOT recommended for production)
 
-### Issue: Port already in use
+#### Issue: Port already in use
 
 **Cause:** Another process is using port 8000, 8001, 8501, or 9200.
 
@@ -377,7 +377,7 @@ kill -9 <PID>
 PORT=8002 python api.py
 ```
 
-### Issue: Out of memory errors
+#### Issue: Out of memory errors
 
 **Cause:** ML models are memory-intensive.
 
@@ -388,29 +388,29 @@ PORT=8002 python api.py
 
 ---
 
-## 📚 Next Steps
+### 📚 Next Steps
 
 Once you have the platform running, here's where to go next:
 
-### For Developers
+#### For Developers
 - **Architecture Overview:** `docs/WHITEPAPER.pdf` — Deep technical dive
 - **API Documentation:** `http://localhost:8000/docs` — Interactive API explorer
 - **Test Suite:** `pytest tests/ -v` — Explore the 155 tests
 - **Contributing:** See `CONTRIBUTING.md` (if available)
 
-### For Business Stakeholders
+#### For Business Stakeholders
 - **Executive Summary:** `docs/EXECUTIVE_SUMMARY.md` — Business value and ROI
 - **Architecture Diagrams:** `docs/architecture/png/` — Visual system overview
 - **Risk Register:** `docs/RISK_REGISTER.md` — Risk management approach
 
-### For Interview Preparation
+#### For Interview Preparation
 - Practice explaining the 4 pillars (AI Automation, Risk Management, Predictive Analytics, Production Engineering)
 - Review the C4 diagrams and be ready to walk through each level
 - Be prepared to discuss the Risk Register and architectural trade-offs
 
 ---
 
-## 🆘 Getting Help
+### 🆘 Getting Help
 
 If you run into issues not covered in this guide:
 
@@ -419,7 +419,7 @@ If you run into issues not covered in this guide:
 
 ---
 
-## 🎉 Congratulations!
+### 🎉 Congratulations!
 
 You've successfully set up PayFlow AI. You now have a fully functional, production-grade financial intelligence platform running on your machine.
 
