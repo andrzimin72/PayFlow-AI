@@ -1,0 +1,9 @@
+# Demo-specific dependencies
+# ==========================
+# These are required to run the demo scripts
+
+rich>=13.7.0  # For beautiful terminal output
+plotly>=5.18.0  # For interactive charts
+streamlit>=1.28.0  # For dashboard
+pandas>=2.1.0  # Data manipulation
+numpy>=1.24.0  # Numerical operations
