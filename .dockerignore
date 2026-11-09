@@ -1,0 +1,92 @@
+# =============================================================================
+# Docker Ignore File
+# =============================================================================
+# Excludes files from the Docker build context to:
+# 1. Reduce build context size (faster builds)
+# 2. Prevent sensitive files from being included
+# 3. Avoid unnecessary files in the image
+
+# Version control
+.git
+.gitignore
+
+# IDE and editor files
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Python artifacts
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# Testing and coverage
+.pytest_cache
+.mypy_cache
+.coverage
+htmlcov/
+coverage.xml
+junit/
+.tox/
+
+# Documentation build
+docs/_build/
+
+# Docker files (avoid recursive builds)
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Environment and secrets (NEVER include in image)
+.env
+.env.*
+*.pem
+*.key
+secrets/
+
+# Logs and data
+logs/
+*.log
+data/
+*.sqlite3
+*.db
+
+# Monitoring data
+prometheus_data/
+grafana_data/
+elasticsearch_data/
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+
+# Demo and temporary files
+demo_output/
+*.tmp
+*.bak
+
+# Node modules (if any frontend)
+node_modules/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
