@@ -1,0 +1,207 @@
+# =============================================================================
+# PayFlow AI - Project Structure
+# =============================================================================
+# Complete map of the PayFlow AI platform codebase.
+#
+# Legend:
+#   📁  Directory
+#   📄  Source file
+#   ⚙️  Configuration file
+#   🧪  Test file
+#   📊  Documentation / diagram
+#   🔒  Contains secrets (never commit)
+#   🐳  Docker-related
+#   🔄  CI/CD related
+#
+# Version: 4.1.0
+# Last updated: 2026-11-07
+# =============================================================================
+
+payflow-ai/
+│
+├── 📄 app.py                              # 🖥️  Streamlit dashboard (main UI)
+├── 📄 api.py                              # 🌐  FastAPI REST API server
+├── 📄 webhook_listener.py                 # 🔔  Real-time PayPal webhook processor
+│
+├── 📄 paypal_client.py                    # 🔌  PayPal API transport layer
+├── 📄 ai_engine.py                        # 🧠  Zero-shot NLP categorization
+├── 📄 generative_ai.py                    # 📝  Mistral-7B summaries & dispute drafts
+├── 📄 elastic_manager.py                  # 💾  Elasticsearch data layer
+├── 📄 forecasting.py                      # 📈  Prophet cash flow forecasting
+├── 📄 anomaly_detector.py                 # 🚨  Isolation Forest anomaly detection
+├── 📄 risk_engine.py                      # 🛡️  Weighted risk scoring engine
+├── 📄 invoice_manager.py                  # 📄  PayPal invoice management
+├── 📄 dispute_manager.py                  # ⚖️  Dispute resolution with AI
+│
+├── 📁 security/                           # 🔒  Security package
+│   ├── 📄 __init__.py                     #     Package exports
+│   ├── 📄 token_manager.py                #     OAuth 2.0 token lifecycle
+│   └── 📄 webhook_verifier.py             #     Cryptographic signature verification
+│
+├── 📁 observability/                      # 📊  Monitoring package
+│   ├── 📄 __init__.py                     #     Package exports
+│   ├── 📄 logging.py                      #     Structured JSON logging
+│   ├── 📄 metrics.py                      #     Prometheus metrics
+│   └── 📄 tracing.py                      #     OpenTelemetry distributed tracing
+│
+├── 📁 utils/                              # 🛠️  Utilities package
+│   ├── 📄 __init__.py                     #     Package exports
+│   └── 📄 formatters.py                   #     Currency, date, risk formatting
+│
+├── 📁 tests/                              # 🧪  Test suite
+│   ├── 📄 __init__.py                     #     Test utilities & helpers
+│   ├── 📄 conftest.py                     #     Shared fixtures (25 fixtures)
+│   │
+│   ├── 🧪 test_ai_engine.py               #     AI engine unit tests (17 tests)
+│   ├── 🧪 test_paypal_client.py           #     PayPal client tests (13 tests)
+│   ├── 🧪 test_api.py                     #     FastAPI endpoint tests (18 tests)
+│   ├── 🧪 test_forecasting.py             #     Forecasting tests (8 tests)
+│   ├── 🧪 test_elastic_manager.py         #     Elasticsearch tests (17 tests)
+│   ├── 🧪 test_invoice_manager.py         #     Invoice manager tests (12 tests)
+│   ├── 🧪 test_dispute_manager.py         #     Dispute manager tests (12 tests)
+│   ├── 🧪 test_risk_engine.py             #     Risk engine tests (47 tests)
+│   │
+│   ├── 📁 integration/                    # 🔗  Integration tests
+│   │   ├── 📄 __init__.py
+│   │   ├── 🧪 test_data_pipelines.py      #     PayPal → AI → ES → Search
+│   │   ├── 🧪 test_risk_pipeline.py       #     ES → Anomaly → Risk → Portfolio
+│   │   ├── 🧪 test_api_integration.py     #     Full API flows
+│   │   └── 🧪 test_webhook_integration.py #     Webhook → Verify → AI → Alert
+│   │
+│   └── 📁 performance/                    # 📈  Performance benchmarks
+│       ├── 📄 __init__.py
+│       ├── 📄 conftest.py                 #     Benchmark fixtures
+│       ├── 🧪 test_ai_performance.py      #     AI pipeline benchmarks (12)
+│       ├── 🧪 test_pipeline_performance.py#     Pipeline benchmarks (7)
+│       └── 🧪 test_data_layer_performance.py #  Data layer benchmarks (9)
+│
+├── 📁 demo/                               # 🎬  Demo suite
+│   ├── 📄 __init__.py
+│   └── 📄 synthetic_data_generator.py     #     Realistic synthetic data
+│
+├── 📄 demo_terminal.py                    # 🎬  Terminal-based demo
+├── 📄 demo_dashboard.py                   # 🎬  Streamlit demo dashboard
+│
+├── 📁 monitoring/                         # 📊  Observability stack config
+│   ├── ⚙️ prometheus.yml                  #     Prometheus scrape config
+│   ├── ⚙️ alert_rules.yml                 #     Alerting rules
+│   ├── ⚙️ alertmanager.yml                #     Alert routing
+│   └── 📁 grafana/                        #     Grafana provisioning
+│       └── 📁 provisioning/
+│           ├── 📁 datasources/
+│           │   └── ⚙️ prometheus.yml
+│           └── 📁 dashboards/
+│               └── ⚙️ dashboards.yml
+│
+├── 📁 docker/                             # 🐳  Docker helpers
+│   ├── 📄 healthcheck.sh                  #     Container health check script
+│   ├── 📄 entrypoint.sh                   #     Service entrypoint
+│   └── ⚙️ nginx.conf                      #     Optional reverse proxy
+│
+├── 📁 docs/                               # 📚  Documentation
+│   ├── 📄 README.md                       #     Main project README
+│   ├── 📄 README-DEMO.md                  #     Demo suite documentation
+│   ├── 📄 ARCHITECTURE.md                 #     Architecture overview
+│   └── 📁 architecture/                   # 📊  C4 model diagrams
+│       ├── 📊 c4_context.puml             #     Level 1: System context
+│       ├── 📊 c4_container.puml           #     Level 2: Containers
+│       ├── 📊 c4_component_core.puml      #     Level 3: Components
+│       ├── 📊 c4_dynamic_webhook.puml     #     Dynamic: webhook flow
+│       ├── 📊 c4_deployment.puml          #     Deployment: dev vs prod
+│       ├── 📄 render_diagrams.py          #     Diagram renderer
+│       └── 📁 png/                        #     Generated PNG outputs
+│
+├── 📁 .github/                            # 🔄  GitHub configuration
+│   └── 📁 workflows/
+│       └── 🔄 ci.yml                      #     CI/CD pipeline
+│
+├── 🐳 Dockerfile                          #     Multi-stage build
+├── 🐳 .dockerignore                       #     Docker build exclusions
+├── 🐳 docker-compose.yml                  #     Main compose (with profiles)
+├── 🐳 docker-compose.override.yml         #     Dev overrides (auto-loaded)
+├── 🐳 docker-compose.prod.yml             #     Production overrides
+│
+├── ⚙️ Makefile                            #     Convenience commands
+├── ⚙️ pytest.ini                          #     Pytest configuration
+├── ⚙️ .env                                # 🔒  Local environment (gitignored)
+├── ⚙️ .env.example                        #     Environment template
+├── ⚙️ .gitignore                          #     Git ignore rules
+│
+├── 📦 requirements.txt                    #     Production dependencies
+├── 📦 requirements-dev.txt                #     Development dependencies
+├── 📦 requirements-demo.txt               #     Demo-only dependencies
+│
+├── 📁 logs/                               # 📝  Runtime logs (gitignored)
+├── 📁 data/                               # 💾  Local data cache (gitignored)
+├── 📁 htmlcov/                            # 📊  Coverage reports (gitignored)
+└── 📁 .venv/                              # 🐍  Virtual environment (gitignored)
+
+
+# =============================================================================
+# FILE COUNT SUMMARY
+# =============================================================================
+#
+#   Source modules:          13 files  (root-level Python modules)
+#   Package modules:         10 files  (security, observability, utils)
+#   Test files:              21 files  (unit, integration, performance)
+#   Demo files:               3 files  (demo suite)
+#   Configuration:           15 files  (Docker, CI/CD, pytest, etc.)
+#   Documentation:           10 files  (README, C4 diagrams, etc.)
+#   ─────────────────────────────────────────
+#   TOTAL:                   72 files
+#
+# =============================================================================
+# TEST COVERAGE SUMMARY
+# =============================================================================
+#
+#   Unit tests:              97 tests
+#   Integration tests:       30 tests
+#   Performance benchmarks:  28 benchmarks
+#   ─────────────────────────────────────────
+#   TOTAL:                   155 tests/benchmarks
+#
+#   Target coverage:         85%+
+#   Minimum threshold:       70% (enforced by pytest.ini)
+#
+# =============================================================================
+# INNOVATION PATHS IMPLEMENTED
+# =============================================================================
+#
+#   ✅ 1. Generative AI (Mistral-7B summaries)
+#   ✅ 2. Event-Driven Architecture (Webhooks + Zapier)
+#   ✅ 3. Enterprise Data Layer (Elasticsearch)
+#   ✅ 4. Pro-Grade UI & API (AG Grid + FastAPI + APIMatic)
+#   ✅ 5. Security & Hardening (Webhook verification, rate limiting)
+#   ✅ 6. Predictive Analytics (Prophet + Isolation Forest)
+#   ✅ 7. Observability (Prometheus + Grafana + OpenTelemetry)
+#   ✅ 8. Automated Testing & CI/CD (pytest + GitHub Actions)
+#   ✅ 9. Advanced PayPal Features (Invoicing + Disputes)
+#   ✅ 10. Risk Management Engine (Weighted scoring)
+#
+# =============================================================================
+# QUICK START COMMANDS
+# =============================================================================
+#
+#   # Development environment
+#   make dev
+#
+#   # Production environment
+#   make prod
+#
+#   # Run tests
+#   pytest
+#
+#   # Run performance benchmarks
+#   pytest tests/performance/ -v
+#
+#   # Run demo
+#   python demo_terminal.py
+#   streamlit run demo_dashboard.py
+#
+#   # Render architecture diagrams
+#   make diagrams
+#
+#   # View all make commands
+#   make help
+#
+# =============================================================================
