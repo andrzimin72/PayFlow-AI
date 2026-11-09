@@ -1,4 +1,4 @@
-# 🧪 PayFlow AI — Testing Guide
+## 🧪 PayFlow AI — Testing Guide
 
 **The complete guide to testing the PayFlow AI platform.**
 
@@ -8,7 +8,7 @@
 
 ---
 
-## 📋 Table of Contents
+### 📋 Table of Contents
 
 1. [Testing Philosophy](#testing-philosophy)
 2. [Prerequisites](#prerequisites)
@@ -28,7 +28,7 @@
 
 ---
 
-## 🎯 Testing Philosophy
+### 🎯 Testing Philosophy
 
 Testing in PayFlow AI is guided by four principles:
 
@@ -42,9 +42,9 @@ Testing in PayFlow AI is guided by four principles:
 
 ---
 
-## 🛠️ Prerequisites
+### 🛠️ Prerequisites
 
-### Required Software
+#### Required Software
 
 | Software | Version | Purpose |
 |:---|:---|:---|
@@ -52,7 +52,7 @@ Testing in PayFlow AI is guided by four principles:
 | pip | Latest | Package management |
 | Docker | 20.10+ | For integration tests (optional) |
 
-### Install Test Dependencies
+#### Install Test Dependencies
 
 ```bash
 # Activate your virtual environment
@@ -74,7 +74,7 @@ This installs:
 - `httpx` — FastAPI TestClient
 - `faker` — realistic test data generation
 
-### Verify Installation
+#### Verify Installation
 
 ```bash
 pytest --version
@@ -83,9 +83,9 @@ pytest --version
 
 ---
 
-## 🚀 Quick Start
+### 🚀 Quick Start
 
-### Run All Tests (Recommended Starting Point)
+#### Run All Tests (Recommended Starting Point)
 
 ```bash
 pytest
@@ -93,7 +93,7 @@ pytest
 
 This runs all unit, integration, and performance tests with verbose output and coverage reporting.
 
-### Common Commands
+#### Common Commands
 
 | Command | What It Does |
 |:---|:---|
@@ -107,7 +107,7 @@ This runs all unit, integration, and performance tests with verbose output and c
 
 ---
 
-## 📂 Test Suite Structure
+### 📂 Test Suite Structure
 
 ```
 tests/
@@ -145,9 +145,9 @@ tests/
 
 ---
 
-## ▶️ Running Tests
+### ▶️ Running Tests
 
-### Basic Test Execution
+#### Basic Test Execution
 
 ```bash
 # Run all tests
@@ -166,7 +166,7 @@ pytest tests/test_risk_engine.py::TestCalculateRiskScore
 pytest tests/test_risk_engine.py::TestCalculateRiskScore::test_minimum_possible_score
 ```
 
-### Filtering Tests
+#### Filtering Tests
 
 ```bash
 # By name pattern
@@ -182,7 +182,7 @@ pytest -m "not performance"   # Everything except performance
 pytest -m "slow and not integration"  # Combined markers
 ```
 
-### Parallel Execution
+#### Parallel Execution
 
 For faster test runs on multi-core machines:
 
@@ -196,7 +196,7 @@ pytest -n 4
 
 ⚠️ **Note:** Some tests share module-level state and may not be safe to parallelize. If you see flaky behavior with `-n`, run without parallelism.
 
-### Stopping Conditions
+#### Stopping Conditions
 
 ```bash
 # Stop on first failure
@@ -214,9 +214,9 @@ pytest --ff
 
 ---
 
-## 📊 Test Categories
+### 📊 Test Categories
 
-### Unit Tests
+#### Unit Tests
 
 **Location:** `tests/test_*.py`  
 **Purpose:** Verify individual modules in isolation  
@@ -239,7 +239,7 @@ def test_minimum_possible_score(self):
     assert 0.0 <= score <= 10.0
 ```
 
-### Integration Tests
+#### Integration Tests
 
 **Location:** `tests/integration/`  
 **Purpose:** Verify modules work together correctly  
@@ -264,7 +264,7 @@ def test_full_ingestion_pipeline(
     assert len(results) >= 1
 ```
 
-### Performance Benchmarks
+#### Performance Benchmarks
 
 **Location:** `tests/performance/`  
 **Purpose:** Measure latency and throughput, catch regressions  
@@ -293,9 +293,9 @@ def test_medium_batch_throughput(
 
 ---
 
-## 📈 Coverage Reporting
+### 📈 Coverage Reporting
 
-### Generate Coverage Report
+#### Generate Coverage Report
 
 ```bash
 # HTML report (recommended for exploration)
@@ -315,7 +315,7 @@ pytest --cov=. \
     --cov-report=xml
 ```
 
-### Coverage Requirements
+#### Coverage Requirements
 
 | Metric | Threshold | Enforced By |
 |:---|:---|:---|
@@ -323,7 +323,7 @@ pytest --cov=. \
 | **Target coverage** | 85%+ | Team goal |
 | **Current coverage** | ~92% | As of v4.1.0 |
 
-### What's Excluded from Coverage
+#### What's Excluded from Coverage
 
 Per `pytest.ini`, these are excluded:
 - `tests/` directory (test code itself)
@@ -332,7 +332,7 @@ Per `pytest.ini`, these are excluded:
 - `__init__.py` files (typically empty)
 - Setup scripts
 
-### Interpreting Coverage Reports
+#### Interpreting Coverage Reports
 
 In the HTML report:
 - **Green lines** = executed during tests (covered)
@@ -344,15 +344,15 @@ In the HTML report:
 
 ---
 
-## ✍️ Writing New Tests
+### ✍️ Writing New Tests
 
-### File Naming Convention
+#### File Naming Convention
 
 - Test files: `test_<module_name>.py`
 - Test classes: `Test<ClassName>`
 - Test methods: `test_<descriptive_name>`
 
-### Test Structure (AAA Pattern)
+#### Test Structure (AAA Pattern)
 
 Every test should follow **Arrange → Act → Assert**:
 
@@ -372,7 +372,7 @@ def test_calculate_risk_score_with_high_anomaly(self):
     assert score <= 100.0
 ```
 
-### Use Fixtures for Shared Setup
+#### Use Fixtures for Shared Setup
 
 ```python
 # ❌ Bad: Duplicated setup in every test
@@ -391,7 +391,7 @@ def test_something(self, sample_paypal_transactions, mock_classifier):
     assert len(result) == len(sample_paypal_transactions)
 ```
 
-### Test Naming Best Practices
+#### Test Naming Best Practices
 
 ```python
 # ✅ Good: Descriptive, explains what's being tested
@@ -405,7 +405,7 @@ def test_webhook(self): ...
 def test_forecast(self): ...
 ```
 
-### Markers for Test Classification
+#### Markers for Test Classification
 
 ```python
 import pytest
@@ -429,9 +429,9 @@ def test_real_es_query(self): ...
 
 ---
 
-## 🎭 Mocking Strategy
+### 🎭 Mocking Strategy
 
-### What to Mock
+#### What to Mock
 
 | Dependency | Mock Approach | Why |
 |:---|:---|:---|
@@ -441,14 +441,14 @@ def test_real_es_query(self): ...
 | Elasticsearch (unit tests) | Mock `Elasticsearch` class | Fast, deterministic, no Docker required |
 | Elasticsearch (integration tests) | In-memory mock via `integration_es_client` fixture | Realistic behavior without external dependencies |
 
-### What NOT to Mock
+#### What NOT to Mock
 
 - **Internal module interactions** in integration tests — this is the whole point
 - **Standard library functions** — they're reliable and fast
 - **Pure functions** — they have no side effects to mock
 - **Data transformations** — test the real logic
 
-### Mocking Pattern Examples
+#### Mocking Pattern Examples
 
 **Mocking an HTTP call:**
 ```python
@@ -478,7 +478,7 @@ def test_score_all_returns_list(self, mock_get_anomaly, sample_transaction):
     assert isinstance(result, list)
 ```
 
-### The In-Memory Elasticsearch Mock
+#### The In-Memory Elasticsearch Mock
 
 For integration tests, we use a custom in-memory Elasticsearch mock that supports:
 - Index creation/deletion
@@ -501,11 +501,11 @@ def test_full_pipeline(self, integration_es_client, mock_classifier):
 
 ---
 
-## 🔧 Fixtures Reference
+### 🔧 Fixtures Reference
 
 All shared fixtures are defined in `tests/conftest.py`. Key fixtures include:
 
-### PayPal Transaction Fixtures
+#### PayPal Transaction Fixtures
 
 | Fixture | Description |
 |:---|:---|
@@ -514,7 +514,7 @@ All shared fixtures are defined in `tests/conftest.py`. Key fixtures include:
 | `malformed_paypal_transaction` | Transaction with missing fields |
 | `large_paypal_transactions` | 100 transactions for performance testing |
 
-### AI/ML Fixtures
+#### AI/ML Fixtures
 
 | Fixture | Description |
 |:---|:---|
@@ -524,7 +524,7 @@ All shared fixtures are defined in `tests/conftest.py`. Key fixtures include:
 | `high_confidence_df` | DataFrame with all confidence > 0.9 |
 | `low_confidence_df` | DataFrame with all confidence < 0.6 |
 
-### Integration Fixtures
+#### Integration Fixtures
 
 | Fixture | Description |
 |:---|:---|
@@ -534,13 +534,13 @@ All shared fixtures are defined in `tests/conftest.py`. Key fixtures include:
 | `valid_webhook_payload` | Realistic PayPal webhook payload |
 | `high_risk_webhook_payload` | Webhook payload that triggers high-risk alert |
 
-### API Fixtures
+#### API Fixtures
 
 | Fixture | Description |
 |:---|:---|
 | `api_client` | FastAPI TestClient with mocked classifier |
 
-### Autouse Fixtures
+#### Autouse Fixtures
 
 These run automatically for every test:
 
@@ -551,9 +551,9 @@ These run automatically for every test:
 
 ---
 
-## 📊 Performance Benchmarking
+### 📊 Performance Benchmarking
 
-### Running Benchmarks
+#### Running Benchmarks
 
 ```bash
 # Run all performance tests
@@ -572,7 +572,7 @@ pytest tests/performance/ --benchmark-json=benchmarks.json
 pytest tests/performance/ --benchmark-csv=benchmarks.csv
 ```
 
-### Understanding Benchmark Output
+#### Understanding Benchmark Output
 
 ```
 Name                              Min       Max      Mean    StdDev
@@ -584,7 +584,7 @@ test_small_batch_throughput    12.34ms   15.67ms  13.45ms   0.89ms
 - **Mean**: Average latency
 - **StdDev**: Variability (lower = more consistent)
 
-### Performance Thresholds
+#### Performance Thresholds
 
 | Operation | Threshold | Rationale |
 |:---|:---|:---|
@@ -599,9 +599,9 @@ test_small_batch_throughput    12.34ms   15.67ms  13.45ms   0.89ms
 
 ---
 
-## 🔄 CI/CD Integration
+### 🔄 CI/CD Integration
 
-### GitHub Actions Workflow
+#### GitHub Actions Workflow
 
 The CI pipeline (`.github/workflows/ci.yml`) runs tests automatically on every push and pull request:
 
@@ -622,7 +622,7 @@ The CI pipeline (`.github/workflows/ci.yml`) runs tests automatically on every p
       -v
 ```
 
-### Local CI Simulation
+#### Local CI Simulation
 
 To run tests exactly as CI does:
 
@@ -635,7 +635,7 @@ This runs:
 - XML and HTML reports
 - JUnit XML for CI parsers
 
-### Coverage Upload to Codecov
+#### Coverage Upload to Codecov
 
 If you've configured Codecov (recommended for public repos):
 
@@ -648,11 +648,11 @@ codecov -f coverage.xml
 
 ---
 
-## 🐛 Troubleshooting
+### 🐛 Troubleshooting
 
-### Common Issues
+#### Common Issues
 
-#### Issue: `ModuleNotFoundError: No module named 'pytest'`
+##### Issue: `ModuleNotFoundError: No module named 'pytest'`
 
 **Cause:** Test dependencies not installed.
 
@@ -661,7 +661,7 @@ codecov -f coverage.xml
 pip install -r requirements-dev.txt
 ```
 
-#### Issue: Tests fail with "Elasticsearch connection refused"
+##### Issue: Tests fail with "Elasticsearch connection refused"
 
 **Cause:** Integration tests trying to connect to real Elasticsearch.
 
@@ -672,7 +672,7 @@ def test_something(self, integration_es_client):
     ...
 ```
 
-#### Issue: Tests fail with "PAYPAL_CLIENT_ID not set"
+##### Issue: Tests fail with "PAYPAL_CLIENT_ID not set"
 
 **Cause:** Environment variables not configured.
 
@@ -683,7 +683,7 @@ export PAYPAL_SECRET=test_secret
 export HF_TOKEN=test_token
 ```
 
-#### Issue: Performance benchmarks are flaky
+##### Issue: Performance benchmarks are flaky
 
 **Cause:** System load varies between runs.
 
@@ -692,7 +692,7 @@ export HF_TOKEN=test_token
 - Close other applications during benchmark runs
 - Use `--benchmark-warmup=on` to stabilize JIT compilation
 
-#### Issue: Coverage below 70%
+##### Issue: Coverage below 70%
 
 **Cause:** New code added without tests.
 
@@ -705,7 +705,7 @@ pytest --cov=. --cov-report=term-missing
 # Then re-run to verify coverage improved
 ```
 
-#### Issue: Tests pass locally but fail in CI
+##### Issue: Tests pass locally but fail in CI
 
 **Cause:** Environment differences (Python version, OS, available resources).
 
@@ -716,9 +716,9 @@ pytest --cov=. --cov-report=term-missing
 
 ---
 
-## 🔧 Test Maintenance
+### 🔧 Test Maintenance
 
-### When to Update Tests
+#### When to Update Tests
 
 | Change | Action |
 |:---|:---|
@@ -728,7 +728,7 @@ pytest --cov=. --cov-report=term-missing
 | Performance regression | Add a benchmark to catch future regressions |
 | Dependency upgrade | Run full test suite; fix any breakage |
 
-### Test Debt Indicators
+#### Test Debt Indicators
 
 Watch for these warning signs:
 - Tests taking > 5 minutes to run
@@ -737,7 +737,7 @@ Watch for these warning signs:
 - Tests that are hard to understand
 - Duplicated test setup code
 
-### Refactoring Tests
+#### Refactoring Tests
 
 When tests become hard to maintain:
 1. Extract common setup into fixtures
@@ -747,9 +747,9 @@ When tests become hard to maintain:
 
 ---
 
-## 📈 Metrics and Goals
+### 📈 Metrics and Goals
 
-### Current State (as of v4.1.0)
+#### Current State (as of v4.1.0)
 
 | Metric | Value | Status |
 |:---|:---|:---|
@@ -761,7 +761,7 @@ When tests become hard to maintain:
 | Test execution time | ~45 seconds | ✅ |
 | Flaky tests | 0 | ✅ |
 
-### Goals
+#### Goals
 
 | Goal | Target | Timeline |
 |:---|:---|:---|
@@ -771,7 +771,7 @@ When tests become hard to maintain:
 | Zero flaky tests | 0 | Ongoing |
 | Performance regression detection | All critical paths | Q1 2027 |
 
-### Measuring Test Quality
+#### Measuring Test Quality
 
 Good tests are:
 - **Fast** — unit tests < 100ms, integration < 5s
@@ -782,7 +782,7 @@ Good tests are:
 
 ---
 
-## 📚 Additional Resources
+### 📚 Additional Resources
 
 - **pytest documentation:** https://docs.pytest.org/
 - **pytest-benchmark:** https://pytest-benchmark.readthedocs.io/
@@ -793,7 +793,7 @@ Good tests are:
 
 ---
 
-## 🎉 Summary
+### 🎉 Summary
 
 Testing in PayFlow AI is a first-class concern, not an afterthought. With 155 tests across unit, integration, and performance categories, 92% code coverage, and a comprehensive CI/CD pipeline, the platform is built on a foundation of verified correctness.
 
