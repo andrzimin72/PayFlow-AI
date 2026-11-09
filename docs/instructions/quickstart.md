@@ -416,23 +416,12 @@ If you run into issues not covered in this guide:
 
 1. **Check the troubleshooting section above** — most common issues are covered
 2. **Review the logs** — `logs/api.log`, `logs/webhook.log`, etc.
-3. **Open an issue** on GitHub: [github.com/yourusername/payflow-ai/issues](https://github.com/yourusername/payflow-ai/issues)
-4. **Contact the author:** `sara@payflow-ai.example.com`
 
 ---
 
 ## 🎉 Congratulations!
 
 You've successfully set up PayFlow AI. You now have a fully functional, production-grade financial intelligence platform running on your machine.
-
-**What you've built:**
-- ✅ AI-powered transaction categorization
-- ✅ Real-time risk scoring and fraud detection
-- ✅ Cash flow forecasting
-- ✅ Generative AI summaries
-- ✅ Invoice and dispute management
-- ✅ Full observability and monitoring
-- ✅ Enterprise-grade security
 
 **What's next:**
 - Explore the dashboard and try different queries
@@ -445,4 +434,4 @@ Welcome to PayFlow AI! 🚀
 
 ---
 
-*© 2026 AndreZimin. Licensed under the Apache-2.0 License.*
+*© 2026 Andre Zimin. Licensed under the Apache-2.0 License.*
