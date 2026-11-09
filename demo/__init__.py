@@ -26,8 +26,8 @@ from demo.synthetic_data_generator import (
 )
 
 __version__ = "1.0.0"
-__author__ = "Sara"
-__license__ = "MIT"
+__author__ = "Andre Zimin"
+__license__ = "Apache-2.0"
 
 __all__ = [
     "SyntheticDataGenerator",
