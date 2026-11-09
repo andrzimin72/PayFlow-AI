@@ -1,13 +1,13 @@
-# PayFlow AI: An Enterprise-Grade Platform for AI-Driven Financial Operations and Real-Time Risk Management
+## PayFlow AI: An Enterprise-Grade Platform for AI-Driven Financial Operations and Real-Time Risk Management
 
 **Version:** 1.0.0  
 **Date:** November 2026  
-**Authors:** AnndreZimin  
+**Authors:** Andre Zimin  
 **License:** Apache-2.0.  
 
 ---
 
-## Abstract
+### Abstract
 
 PayFlow AI is an open-source financial operations platform that transforms raw payment transaction data into proactive business intelligence through a composition of specialized machine learning techniques. The system integrates zero-shot natural language processing for transaction categorization, unsupervised anomaly detection via Isolation Forests, time-series cash flow forecasting using Prophet, and large language model-based narrative synthesis. A novel contribution of this work is a **weighted composite risk scoring function** that fuses three heterogeneous signals — statistical anomaly, AI uncertainty, and financial impact — into a single interpretable score on a 0–100 scale, which is then mapped to deterministic business actions. The platform is secured end-to-end with cryptographic webhook verification, OAuth 2.0 token lifecycle management, and full observability via Prometheus, OpenTelemetry, and structured JSON logging. This document describes the architecture, algorithms, security model, and operational characteristics of the system, and discusses its limitations and avenues for future research.
 
@@ -15,13 +15,13 @@ PayFlow AI is an open-source financial operations platform that transforms raw p
 
 ---
 
-## 1. Introduction
+### 1. Introduction
 
-### 1.1 Problem Statement
+#### 1.1 Problem Statement
 
 Small and medium-sized businesses, freelancers, and creator-economy participants face a fundamental asymmetry: payment processors such as PayPal generate rich streams of transactional data, but the tooling available to interpret that data remains largely **reactive**. Traditional accounting software records what has happened; it does not categorize new transactions intelligently, forecast future cash flow, flag anomalous activity in real time, or assist in dispute resolution. The result is that financial decision-making remains manual, delayed, and error-prone.
 
-### 1.2 Design Objectives
+#### 1.2 Design Objectives
 
 PayFlow AI was designed to satisfy five concurrent objectives:
 
@@ -31,7 +31,7 @@ PayFlow AI was designed to satisfy five concurrent objectives:
 4. **Security** — Treat every external input as untrusted until cryptographically verified.
 5. **Observability** — Make the internal state of the system auditable at every layer.
 
-### 1.3 Contributions
+#### 1.3 Contributions
 
 This document makes the following contributions:
 
@@ -42,9 +42,9 @@ This document makes the following contributions:
 
 ---
 
-## 2. System Overview
+### 2. System Overview
 
-### 2.1 Architectural Style
+#### 2.1 Architectural Style
 
 PayFlow AI is implemented as a **modular monolith** — a single deployable unit composed of clearly bounded modules that communicate via in-process function calls rather than network protocols. This choice was deliberate:
 
@@ -54,7 +54,7 @@ PayFlow AI is implemented as a **modular monolith** — a single deployable unit
 
 The trade-off is that the system scales as a unit rather than per-component. For the target workload of 10²–10⁴ transactions per day, this is acceptable; beyond that threshold, migration to an event-driven microservices architecture would be warranted (see §9.1).
 
-### 2.2 Layered Architecture
+#### 2.2 Layered Architecture
 
 The system is organized into five logical layers:
 
@@ -68,7 +68,7 @@ The system is organized into five logical layers:
 
 Cross-cutting concerns — security and observability — are implemented as horizontal layers that every other layer depends upon.
 
-### 2.3 Runtime Topology
+#### 2.3 Runtime Topology
 
 Three distinct processes are spawned from the same codebase:
 
@@ -80,9 +80,9 @@ All three import the same `security/`, `observability/`, and application modules
 
 ---
 
-## 3. Data Ingestion Layer
+### 3. Data Ingestion Layer
 
-### 3.1 PayPal Integration
+#### 3.1 PayPal Integration
 
 Transaction data enters the system through two channels:
 
@@ -90,7 +90,7 @@ Transaction data enters the system through two channels:
 
 **Real-time ingestion** — The webhook listener exposes a single endpoint (`POST /paypal-webhook`) that receives asynchronous event notifications from PayPal for every completed payment.
 
-### 3.2 OAuth 2.0 Token Lifecycle
+#### 3.2 OAuth 2.0 Token Lifecycle
 
 Access tokens are managed by the `PayPalTokenManager` class, which implements:
 
@@ -98,7 +98,7 @@ Access tokens are managed by the `PayPalTokenManager` class, which implements:
 - **Thread-safe refresh** — an `RLock` prevents race conditions during concurrent refresh attempts.
 - **Exponential backoff retry** — transient failures are retried up to 3 times with delays of 1s, 2s, 4s.
 
-### 3.3 Cryptographic Webhook Verification
+#### 3.3 Cryptographic Webhook Verification
 
 Every incoming webhook is verified before any processing occurs. The `PayPalWebhookVerifier` performs the following checks in strict order:
 
@@ -111,11 +111,11 @@ Any failure short-circuits to an HTTP 401 response and is recorded as a security
 
 ---
 
-## 4. AI and Machine Learning Pipeline
+### 4. AI and Machine Learning Pipeline
 
 The AI pipeline is the intellectual core of the platform. It composes four distinct techniques, each selected for its suitability to the specific sub-problem.
 
-### 4.1 Zero-Shot Transaction Categorization
+#### 4.1 Zero-Shot Transaction Categorization
 
 **Model:** `facebook/bart-large-mnli`  
 **Technique:** Zero-shot classification via natural language inference
@@ -128,7 +128,7 @@ The model computes, for each label $c_i \in C$, an entailment probability $P(c_i
 
 **Rationale for zero-shot over fine-tuning:** Zero-shot classification requires no labeled training data, enabling immediate deployment against novel transaction vocabularies. The trade-off is lower accuracy on domain-specific jargon, which is mitigated by exposing the confidence score to downstream risk scoring (see §4.5).
 
-### 4.2 Generative Narrative Synthesis
+#### 4.2 Generative Narrative Synthesis
 
 **Model:** `mistralai/Mistral-7B-Instruct-v0.2`  
 **Technique:** Prompt-engineered text generation
@@ -137,7 +137,7 @@ A curated prompt frames the Mistral-7B model as a financial analyst and provides
 
 **Constraints:** Generation is bounded by `max_new_tokens=150` (summaries) or `300` (disputes), with `temperature=0.7` to balance determinism and fluency.
 
-### 4.3 Time-Series Cash Flow Forecasting
+#### 4.3 Time-Series Cash Flow Forecasting
 
 **Model:** Meta's **Prophet**  
 **Technique:** Additive time-series decomposition
@@ -154,7 +154,7 @@ where $g(t)$ is a piecewise-linear trend, $s(t)$ is weekly seasonality, $h(t)$ i
 
 **Configuration:** `changepoint_prior_scale=0.05` is used to produce conservative trend flexibility appropriate for short-horizon financial data.
 
-### 4.4 Unsupervised Anomaly Detection
+#### 4.4 Unsupervised Anomaly Detection
 
 **Model:** **Isolation Forest** (Liu et al., 2008)  
 **Technique:** Ensemble anomaly scoring
@@ -167,7 +167,7 @@ where $a$ is the transaction amount, $h$ is the hour of day, $\ell$ is the descr
 
 The raw anomaly score is normalized to $\hat{s} \in [0, 1]$ where 1 indicates the most anomalous transaction in the current dataset.
 
-### 4.5 Composite Risk Scoring (Core Contribution)
+#### 4.5 Composite Risk Scoring (Core Contribution)
 
 The central algorithmic contribution of PayFlow AI is a **weighted composite risk function** that fuses three heterogeneous signals into a single interpretable score.
 
@@ -198,9 +198,9 @@ The amount factor is **capped at 5× the portfolio mean** to prevent extreme out
 
 ---
 
-## 5. Data Layer
+### 5. Data Layer
 
-### 5.1 Elasticsearch Schema
+#### 5.1 Elasticsearch Schema
 
 Transactions are indexed into a single Elasticsearch index (`payflow_transactions`) with the following mapping:
 
@@ -214,7 +214,7 @@ Transactions are indexed into a single Elasticsearch index (`payflow_transaction
 
 Document IDs are constructed as `f"{description}_{amount}_{currency}"` (lowercased, truncated to 500 chars) to provide **idempotent upserts** — reprocessing the same transaction does not create duplicates.
 
-### 5.2 Search Strategy
+#### 5.2 Search Strategy
 
 Search uses Elasticsearch's `multi_match` query with:
 - **Field boosting:** `description^3`, `description.keyword^2`, `ai_category^2`
@@ -225,9 +225,9 @@ Results are sorted by relevance score, then by `indexed_at` descending.
 
 ---
 
-## 6. Security Model
+### 6. Security Model
 
-### 6.1 Threat Model
+#### 6.1 Threat Model
 
 The platform assumes the following threat model:
 
@@ -235,7 +235,7 @@ The platform assumes the following threat model:
 - **Third-party services** (PayPal, Hugging Face, Zapier) are trusted for data authenticity but not for availability.
 - **Local operators** are trusted but subject to audit logging.
 
-### 6.2 Defense in Depth
+#### 6.2 Defense in Depth
 
 | Layer | Control |
 |:---|:---|
@@ -247,7 +247,7 @@ The platform assumes the following threat model:
 | **Transport** | HTTPS/TLS for all external communication |
 | **Observability** | Structured logs with automatic PII masking, distributed traces |
 
-### 6.3 Known Gaps
+#### 6.3 Known Gaps
 
 The current implementation does **not** include:
 - Role-based access control (RBAC)
@@ -259,9 +259,9 @@ These are documented in the project's Risk Register with target remediation date
 
 ---
 
-## 7. Observability and Operations
+### 7. Observability and Operations
 
-### 7.1 Metrics
+#### 7.1 Metrics
 
 Prometheus metrics are exposed at `/metrics` and include:
 
@@ -271,11 +271,11 @@ Prometheus metrics are exposed at `/metrics` and include:
 - **Risk metrics:** `payflow_risk_scores`, `payflow_portfolio_risk_score`, `payflow_anomalies_total`
 - **Security metrics:** `payflow_webhooks_total{verified="true|false"}`
 
-### 7.2 Distributed Tracing
+#### 7.2 Distributed Tracing
 
 OpenTelemetry auto-instruments FastAPI and the `requests` library, producing traces that span from the HTTP ingress through AI inference, Elasticsearch queries, and external API calls. Traces are exported to Jaeger via OTLP gRPC.
 
-### 7.3 Structured Logging
+#### 7.3 Structured Logging
 
 All logs are emitted as JSON via `structlog`, with automatic injection of:
 - ISO-8601 timestamps
@@ -286,7 +286,7 @@ All logs are emitted as JSON via `structlog`, with automatic injection of:
 
 ---
 
-## 8. Performance Characteristics
+### 8. Performance Characteristics
 
 Performance benchmarks were conducted on a commodity laptop (4-core CPU, 16 GB RAM) using `pytest-benchmark`. Results represent mean latency over 50 iterations.
 
@@ -305,9 +305,9 @@ Full benchmark source is available in `tests/performance/`.
 
 ---
 
-## 9. Limitations and Future Work
+### 9. Limitations and Future Work
 
-### 9.1 Current Limitations
+#### 9.1 Current Limitations
 
 1. **Scale ceiling.** The modular monolith architecture is appropriate for 10²–10⁴ transactions per day. Beyond this, synchronous webhook processing and shared-process AI inference will become bottlenecks.
 
@@ -319,7 +319,7 @@ Full benchmark source is available in `tests/performance/`.
 
 5. **LLM rate limits.** Use of the free-tier Hugging Face Inference API introduces rate-limiting risk. Production deployment requires a dedicated GPU endpoint or paid enterprise API.
 
-### 9.2 Future Work
+#### 9.2 Future Work
 
 - **Event-driven architecture.** Migrate webhook processing to Apache Kafka or RabbitMQ to decouple ingestion from AI inference.
 - **Domain-specific fine-tuning.** Fine-tune Mistral-7B via QLoRA on a curated corpus of financial transaction descriptions to improve categorization accuracy.
@@ -329,13 +329,13 @@ Full benchmark source is available in `tests/performance/`.
 
 ---
 
-## 10. Conclusion
+### 10. Conclusion
 
 PayFlow AI demonstrates that a single engineer can assemble a production-grade financial intelligence platform by composing best-of-breed open-source components within a disciplined architectural framework. The platform's novel contribution — a weighted composite risk scoring function that fuses statistical, probabilistic, and financial signals — provides a principled foundation for explainable, tunable risk management. While significant gaps remain in scale, compliance, and multi-vendor support, the architecture is explicitly designed to accommodate these extensions, and the project's comprehensive test suite, observability stack, and risk register provide a solid foundation for continued evolution.
 
 ---
 
-## References
+### References
 
 1. Taylor, S. G., & Letham, B. (2018). *Forecasting at scale.* The American Statistician, 72(1), 37–45. [Prophet paper]
 2. Liu, F. T., Ting, K. M., & Zhou, Z.-H. (2008). *Isolation Forest.* In Proceedings of the 8th IEEE International Conference on Data Mining (pp. 413–422).
@@ -349,12 +349,12 @@ PayFlow AI demonstrates that a single engineer can assemble a production-grade f
 
 ---
 
-## Document History
+### Document History
 
 | Version | Date | Author | Changes |
 |:---|:---|:---|:---|
-| 1.0.0 | 2026-11-08 |AndreZimin| Initial release |
+| 1.0.0 | 2026-11-08 |Andre Zimin| Initial release |
 
 ---
 
-*© 2026 AndreZimin. This document is licensed under the MIT License.*
+*© 2026 Andre Zimin. This document is licensed under the MIT License.*
