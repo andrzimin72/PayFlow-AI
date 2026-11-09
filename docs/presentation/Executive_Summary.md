@@ -200,12 +200,10 @@ The platform is open-source, self-hostable, and ready for deployment. It represe
 
 ## Contact and Resources
 
-- **Repository:** [github.com/yourusername/payflow-ai](https://github.com/yourusername/payflow-ai)
 - **Technical Whitepaper:** `docs/WHITEPAPER.pdf`
 - **Architecture Diagrams:** `docs/architecture/png/`
 - **Demo (terminal):** `python demo_terminal.py`
 - **Demo (dashboard):** `streamlit run demo_dashboard.py`
-- **Author:** Andre Zimin — `andrzimin72@gmail.com`
 
 ---
 
