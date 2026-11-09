@@ -207,4 +207,4 @@ The platform is open-source, self-hostable, and ready for deployment. It represe
 
 ---
 
-*© 2026 Andre Zimin. This document is licensed under the Apache-2.0. License.*
+*© 2026 Andre Zimin. This document is licensed under the Apache-2.0 License.*
