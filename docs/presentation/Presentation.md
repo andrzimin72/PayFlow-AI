@@ -1,8 +1,8 @@
 ## 🎤 PayFlow AI — Presentation Deck
 
-**A 14-Slide Technical Showcase**
+**A 13-Slide Technical Showcase**
 
-**Duration:** 15–20 minutes + Q&A  
+**Duration:** 15–18 minutes + Q&A  
 **Audience:** Technical interviewers, engineering leaders, conference attendees  
 **Last Updated:** November 2026
 
@@ -529,54 +529,7 @@ Real-Time Risk Management
 
 ---
 
-## Slide 12: What's Next — Roadmap
-
-### Content
-
-```
-┌─────────────────────────────────────────────────────────┐
-│  ROADMAP                                                │
-│                                                         │
-│  Q1–Q2 2027: Scale & Reliability                        │
-│    → Event-driven architecture (Kafka/RabbitMQ)         │
-│    → Managed Elasticsearch with multi-node clustering   │
-│    → Automated backups and disaster recovery            │
-│                                                         │
-│  Q2–Q3 2027: Compliance & Security                      │
-│    → RBAC with JWT authentication                       │
-│    → HashiCorp Vault for secrets                        │
-│    → PII encryption + GDPR/CCPA pipelines               │
-│    → Immutable audit logging                            │
-│                                                         │
-│  Q3–Q4 2027: Market Expansion                           │
-│    → Stripe + Plaid integration                         │
-│    → Fine-tuned Mistral-7B via QLoRA                    │
-│    → Multi-currency + cryptocurrency support            │
-│    → Graph Neural Networks for fraud detection          │
-└─────────────────────────────────────────────────────────┘
-```
-
-### Speaker Notes (60 seconds)
-
-> "The roadmap has three strategic priorities.
->
-> First, scale and reliability. We'll migrate webhook processing to an event-driven architecture with Kafka or RabbitMQ, move Elasticsearch to a managed multi-node cluster, and implement automated backups and disaster recovery.
->
-> Second, compliance and security. We'll add RBAC with JWT authentication, migrate secrets to HashiCorp Vault, implement PII encryption and GDPR data subject rights pipelines, and add immutable audit logging.
->
-> Third, market expansion. We'll integrate Stripe and Plaid for multi-provider support, fine-tune Mistral-7B via QLoRA on domain-specific financial data, add multi-currency and cryptocurrency support, and explore Graph Neural Networks for detecting collusive fraud patterns that are invisible to per-transaction anomaly detection.
->
-> Each of these is a natural extension of the current architecture. The foundation is solid — we're building on it, not rebuilding."
-
-### Design Notes
-- Timeline visual with three phases
-- Use distinct colors for each phase
-- Consider small icons for each item
-- Keep it aspirational but realistic
-
----
-
-## Slide 13: Technical Artifacts
+## Slide 12: Technical Artifacts
 
 ### Content
 
@@ -622,7 +575,7 @@ Real-Time Risk Management
 
 ---
 
-## Slide 14: Summary
+## Slide 13: Summary
 
 ### Content
 
@@ -643,9 +596,6 @@ Real-Time Risk Management
 │                                                         │
 │  "Not just a ledger. A thinking ledger."                │
 │                                                         │
-│                                                         │
-│  github.com/yourusername/payflow-ai                     │
-│  sara@payflow-ai.example.com                            │
 └─────────────────────────────────────────────────────────┘
 ```
 
