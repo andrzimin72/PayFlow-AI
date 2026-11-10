@@ -37,7 +37,7 @@ You can:
 
 ---
 
-## SLIDE 1: Title Slide
+## Slide 1: Title Slide
 
 ### Content
 
@@ -62,7 +62,7 @@ Real-Time Risk Management
 
 ---
 
-## SLIDE 2: The Problem
+## Slide 2: The Problem
 
 ### Content
 
@@ -101,7 +101,7 @@ Real-Time Risk Management
 
 ---
 
-## SLIDE 3: The Solution
+## Slide 3: The Solution
 
 ### Content
 
@@ -139,7 +139,7 @@ Real-Time Risk Management
 
 ---
 
-## SLIDE 4: Architecture Overview
+## Slide 4: Architecture Overview
 
 ### Content
 
@@ -194,7 +194,7 @@ Real-Time Risk Management
 
 ---
 
-## SLIDE 5: The Four Pillars
+## Slide 5: The Four Pillars
 
 ### Content
 
@@ -202,7 +202,7 @@ Real-Time Risk Management
 ┌───────────────────────────────────────────────────────┐
 │  THE FOUR PILLARS                                     │
 │                                                       │
-│  🧠 AI AUTOMATION        🛡️ RISK MANAGEMENT          │
+│  🧠 AI AUTOMATION        🛡️ RISK MANAGEMENT           │
 │  • Zero-shot NLP         • Cryptographic webhooks     │
 │  • Mistral-7B summaries  • Weighted risk scoring      │
 │  • Dispute drafts        • Automated alerting         │
@@ -236,7 +236,7 @@ Real-Time Risk Management
 
 ---
 
-## SLIDE 6: The Core Innovation — Risk Scoring
+## Slide 6: The Core Innovation — Risk Scoring
 
 ### Content
 
@@ -286,7 +286,7 @@ Real-Time Risk Management
 
 ---
 
-## SLIDE 7: Security Model
+## Slide 7: Security Model
 
 ### Content
 
@@ -336,7 +336,7 @@ Real-Time Risk Management
 
 ---
 
-## SLIDE 8: Performance
+## Slide 8: Performance
 
 ### Content
 
@@ -379,7 +379,7 @@ Real-Time Risk Management
 
 ---
 
-## SLIDE 9: Live Demo
+## Slide 9: Live Demo
 
 ### Content
 
@@ -428,7 +428,7 @@ Real-Time Risk Management
 
 ---
 
-## SLIDE 10: Business Impact
+## Slide 10: Business Impact
 
 ### Content
 
@@ -481,7 +481,7 @@ Real-Time Risk Management
 
 ---
 
-## SLIDE 11: Competitive Landscape
+## Slide 11: Competitive Landscape
 
 ### Content
 
@@ -529,7 +529,7 @@ Real-Time Risk Management
 
 ---
 
-## SLIDE 12: What's Next — Roadmap
+## Slide 12: What's Next — Roadmap
 
 ### Content
 
@@ -576,7 +576,7 @@ Real-Time Risk Management
 
 ---
 
-## SLIDE 13: Technical Artifacts
+## Slide 13: Technical Artifacts
 
 ### Content
 
@@ -622,7 +622,7 @@ Real-Time Risk Management
 
 ---
 
-## SLIDE 14: Summary
+## Slide 14: Summary
 
 ### Content
 
