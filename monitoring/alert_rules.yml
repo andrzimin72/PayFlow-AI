@@ -1,0 +1,199 @@
+# Prometheus Alerting Rules for PayFlow AI
+# =========================================
+# Defines critical alerts for monitoring platform health
+
+groups:
+  # ----------------------------------------
+  # API Health Alerts
+  # ----------------------------------------
+  - name: payflow_api_alerts
+    rules:
+      # High error rate
+      - alert: HighErrorRate
+        expr: sum(rate(payflow_requests_total{status_code=~"5.."}[5m])) / sum(rate(payflow_requests_total[5m])) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+          team: backend
+        annotations:
+          summary: "High API error rate detected"
+          description: "More than 5% of API requests are failing for the last 5 minutes"
+      
+      # High latency
+      - alert: HighLatency
+        expr: histogram_quantile(0.95, rate(payflow_request_duration_seconds_bucket[5m])) > 2.0
+        for: 5m
+        labels:
+          severity: warning
+          team: backend
+        annotations:
+          summary: "High API latency detected"
+          description: "95th percentile latency is above 2 seconds"
+      
+      # Service down
+      - alert: ServiceDown
+        expr: up{job="payflow-api"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          team: ops
+        annotations:
+          summary: "PayFlow API is down"
+          description: "The API service has been unreachable for 1 minute"
+
+  # ----------------------------------------
+  # AI Model Alerts
+  # ----------------------------------------
+  - name: payflow_ai_alerts
+    rules:
+      # Slow AI inference
+      - alert: SlowAIInference
+        expr: histogram_quantile(0.95, rate(payflow_ai_inference_seconds_bucket[5m])) > 3.0
+        for: 5m
+        labels:
+          severity: warning
+          team: ml
+        annotations:
+          summary: "Slow AI inference detected"
+          description: "AI model inference is taking longer than 3 seconds (p95)"
+      
+      # Low AI confidence
+      - alert: LowAIConfidence
+        expr: histogram_quantile(0.5, payflow_ai_confidence_scores_bucket) < 0.6
+        for: 10m
+        labels:
+          severity: warning
+          team: ml
+        annotations:
+          summary: "Low AI confidence scores"
+          description: "Median AI confidence has dropped below 60%"
+      
+      # Model not loaded
+      - alert: ModelNotLoaded
+        expr: payflow_ai_model_loaded == 0
+        for: 2m
+        labels:
+          severity: critical
+          team: ml
+        annotations:
+          summary: "AI model is not loaded"
+          description: "The AI model has not been loaded into memory"
+
+  # ----------------------------------------
+  # Elasticsearch Alerts
+  # ----------------------------------------
+  - name: payflow_elastic_alerts
+    rules:
+      # Slow Elasticsearch queries
+      - alert: SlowElasticsearchQueries
+        expr: histogram_quantile(0.95, rate(payflow_elasticsearch_query_seconds_bucket[5m])) > 1.0
+        for: 5m
+        labels:
+          severity: warning
+          team: backend
+        annotations:
+          summary: "Slow Elasticsearch queries"
+          description: "95th percentile query time is above 1 second"
+      
+      # No transactions indexed
+      - alert: NoTransactionsIndexed
+        expr: payflow_transactions_in_elastic == 0
+        for: 30m
+        labels:
+          severity: warning
+          team: backend
+        annotations:
+          summary: "No transactions in Elasticsearch"
+          description: "No transactions have been indexed in the last 30 minutes"
+
+  # ----------------------------------------
+  # Risk Management Alerts
+  # ----------------------------------------
+  - name: payflow_risk_alerts
+    rules:
+      # High portfolio risk
+      - alert: HighPortfolioRisk
+        expr: payflow_portfolio_risk_score > 70
+        for: 5m
+        labels:
+          severity: critical
+          team: risk
+        annotations:
+          summary: "High portfolio risk detected"
+          description: "Portfolio risk score is above 70 (HIGH/CRITICAL)"
+      
+      # Many anomalies detected
+      - alert: ManyAnomaliesDetected
+        expr: rate(payflow_anomalies_total[1h]) > 10
+        for: 5m
+        labels:
+          severity: warning
+          team: risk
+        annotations:
+          summary: "High anomaly detection rate"
+          description: "More than 10 anomalies detected per hour"
+
+  # ----------------------------------------
+  # Webhook Alerts
+  # ----------------------------------------
+  - name: payflow_webhook_alerts
+    rules:
+      # Webhook verification failures
+      - alert: WebhookVerificationFailures
+        expr: rate(payflow_webhooks_total{verified="false"}[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: critical
+          team: security
+        annotations:
+          summary: "Webhook verification failures"
+          description: "Multiple webhook signature verification failures detected"
+      
+      # Webhook listener down
+      - alert: WebhookListenerDown
+        expr: up{job="payflow-webhook"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          team: ops
+        annotations:
+          summary: "Webhook listener is down"
+          description: "The webhook listener service is unreachable"
+
+  # ----------------------------------------
+  # Infrastructure Alerts
+  # ----------------------------------------
+  - name: infrastructure_alerts
+    rules:
+      # High CPU usage
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+          team: ops
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU usage is above 80% for 5 minutes"
+      
+      # High memory usage
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+          team: ops
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage is above 85% for 5 minutes"
+      
+      # Disk space low
+      - alert: DiskSpaceLow
+        expr: (1 - (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"})) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+          team: ops
+        annotations:
+          summary: "Low disk space"
+          description: "Disk usage is above 85%"

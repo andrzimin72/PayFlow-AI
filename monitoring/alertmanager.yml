@@ -1,0 +1,35 @@
+# Alertmanager Configuration
+global:
+  resolve_timeout: 5m
+
+route:
+  group_by: ['alertname', 'severity']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+  receiver: 'default-receiver'
+  routes:
+    - match:
+        severity: critical
+      receiver: 'critical-alerts'
+    - match:
+        severity: warning
+      receiver: 'warning-alerts'
+
+receivers:
+  - name: 'default-receiver'
+    # Configure your notification channels here
+    # Example: webhook_configs, email_configs, slack_configs
+
+  - name: 'critical-alerts'
+    # Add critical alert notification channels
+
+  - name: 'warning-alerts'
+    # Add warning alert notification channels
+
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname']

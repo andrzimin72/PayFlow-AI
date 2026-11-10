@@ -1,0 +1,116 @@
+# Prometheus Configuration for PayFlow AI
+# ========================================
+# This configuration sets up monitoring for all PayFlow AI services
+# with appropriate scrape intervals, alerting rules, and recording rules.
+
+# Global configuration
+global:
+  scrape_interval: 15s        # How often to scrape targets
+  evaluation_interval: 15s    # How often to evaluate rules
+  scrape_timeout: 10s         # Timeout for each scrape request
+  
+  # Labels added to all time series
+  external_labels:
+    cluster: 'payflow-ai'
+    environment: 'production'
+
+# ==========================================
+# ALERTING RULES
+# ==========================================
+rule_files:
+  - "alert_rules.yml"
+
+# Alertmanager configuration (optional)
+# alerting:
+#   alertmanagers:
+#     - static_configs:
+#         - targets:
+#           - alertmanager:9093
+
+# ==========================================
+# SCRAPE CONFIGURATIONS
+# ==========================================
+scrape_configs:
+  # ----------------------------------------
+  # PayFlow AI REST API
+  # ----------------------------------------
+  - job_name: 'payflow-api'
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['host.docker.internal:8000']
+        labels:
+          service: 'payflow-api'
+          component: 'api'
+    
+    # Relabeling for better metric organization
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: 'payflow_(.*)'
+        target_label: metric_name
+        replacement: '${1}'
+
+  # ----------------------------------------
+  # PayFlow AI Webhook Listener
+  # ----------------------------------------
+  - job_name: 'payflow-webhook'
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['host.docker.internal:8001']
+        labels:
+          service: 'payflow-webhook'
+          component: 'webhook'
+
+  # ----------------------------------------
+  # Prometheus self-monitoring
+  # ----------------------------------------
+  - job_name: 'prometheus'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          service: 'prometheus'
+          component: 'monitoring'
+
+  # ----------------------------------------
+  # Elasticsearch (if exporter is running)
+  # ----------------------------------------
+  - job_name: 'elasticsearch'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['elasticsearch-exporter:9114']
+        labels:
+          service: 'elasticsearch'
+          component: 'database'
+
+  # ----------------------------------------
+  # Node Exporter (host metrics)
+  # ----------------------------------------
+  - job_name: 'node'
+    scrape_interval: 15s
+    static_configs:
+      - targets: ['node-exporter:9100']
+        labels:
+          service: 'node'
+          component: 'infrastructure'
+
+# ==========================================
+# RECORDING RULES (Pre-computed queries)
+# ==========================================
+# These rules pre-compute expensive queries for faster dashboard loading
+recording_rules:
+  - record: payflow:api:request_rate:5m
+    expr: sum(rate(payflow_requests_total[5m])) by (endpoint, method)
+  
+  - record: payflow:api:error_rate:5m
+    expr: sum(rate(payflow_requests_total{status_code=~"5.."}[5m])) by (endpoint)
+  
+  - record: payflow:ai:inference_p95:5m
+    expr: histogram_quantile(0.95, rate(payflow_ai_inference_seconds_bucket[5m]))
+  
+  - record: payflow:elastic:query_p95:5m
+    expr: histogram_quantile(0.95, rate(payflow_elasticsearch_query_seconds_bucket[5m]))
+  
+  - record: payflow:risk:portfolio_avg:5m
+    expr: avg(payflow_portfolio_risk_score)
