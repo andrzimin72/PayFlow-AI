@@ -1,4 +1,4 @@
-# 🎤 PayFlow AI — Presentation Deck
+## 🎤 PayFlow AI — Presentation Deck
 
 **A 14-Slide Technical Showcase**
 
@@ -8,7 +8,7 @@
 
 ---
 
-## 📋 How to Use This Deck
+### 📋 How to Use This Deck
 
 This file contains:
 - **Slide content** (what appears on screen)
@@ -24,7 +24,7 @@ You can:
 
 ---
 
-## 🎯 Presentation Strategy
+### 🎯 Presentation Strategy
 
 **Core narrative arc:** Problem → Solution → How it works → Why it matters → What's next
 
@@ -37,9 +37,9 @@ You can:
 
 ---
 
-# SLIDE 1: Title Slide
+## SLIDE 1: Title Slide
 
-## Content
+### Content
 
 ```
 
@@ -50,11 +50,11 @@ Real-Time Risk Management
 
 ```
 
-## Speaker Notes (30 seconds)
+### Speaker Notes (30 seconds)
 
 > "Today I'm going to walk you through PayFlow AI — a platform I built that transforms raw PayPal transaction data into proactive financial intelligence. It's an end-to-end system that combines AI, cryptography, and modern engineering practices to solve a real problem that millions of freelancers and small businesses face every day."
 
-## Design Notes
+### Design Notes
 - Clean, minimal design with PayPal-blue color palette (#003087)
 - Include the PayFlow AI logo if you have one
 - Subtle background pattern (maybe circuit board or data flow)
@@ -62,9 +62,9 @@ Real-Time Risk Management
 
 ---
 
-# SLIDE 2: The Problem
+## SLIDE 2: The Problem
 
-## Content
+### Content
 
 ```
 ┌───────────────────────────────────────────────────────┐
@@ -85,7 +85,7 @@ Real-Time Risk Management
 └───────────────────────────────────────────────────────┘
 ```
 
-## Speaker Notes (60 seconds)
+### Speaker Notes (60 seconds)
 
 > "Let me start with the problem. Over 50 million freelancers and small businesses use PayPal every day. PayPal generates rich, real-time transaction data — but the tools available to interpret that data are stuck in the past.
 >
@@ -93,7 +93,7 @@ Real-Time Risk Management
 >
 > The result? Each freelancer loses $250 to $500 per month in opportunity cost. Fraud goes undetected. Cash flow decisions are made on stale information. This is a real, costly problem — and it's one that modern AI is uniquely positioned to solve."
 
-## Design Notes
+### Design Notes
 - Use red/orange tones to emphasize the problem
 - Include 4 icons representing each pain point
 - Consider a simple chart showing "hours lost per month"
@@ -101,9 +101,9 @@ Real-Time Risk Management
 
 ---
 
-# SLIDE 3: The Solution
+## SLIDE 3: The Solution
 
-## Content
+### Content
 
 ```
 ┌────────────────────────────────────────────────────────┐
@@ -123,7 +123,7 @@ Real-Time Risk Management
 └────────────────────────────────────────────────────────┘
 ```
 
-## Speaker Notes (60 seconds)
+### Speaker Notes (60 seconds)
 
 > "PayFlow AI is what I call a 'thinking ledger.' It doesn't just record transactions — it understands them, predicts what's coming, detects risks in real time, and advises you on what to do.
 >
@@ -131,7 +131,7 @@ Real-Time Risk Management
 >
 > The key insight: this isn't just another dashboard. It's an intelligence layer that sits on top of your payment data and makes it actionable."
 
-## Design Notes
+### Design Notes
 - Use green/blue tones to signal the solution
 - Four large icons with labels
 - Consider a before/after visual: passive ledger → thinking ledger
@@ -139,9 +139,9 @@ Real-Time Risk Management
 
 ---
 
-# SLIDE 4: Architecture Overview
+## SLIDE 4: Architecture Overview
 
-## Content
+### Content
 
 ```
 ┌────────────────────────────────────────────────────────┐
@@ -170,7 +170,7 @@ Real-Time Risk Management
 └────────────────────────────────────────────────────────┘
 ```
 
-## Speaker Notes (90 seconds)
+### Speaker Notes (90 seconds)
 
 > "Let me walk you through the architecture. PayFlow AI is a modular monolith organized into five logical layers.
 >
@@ -186,7 +186,7 @@ Real-Time Risk Management
 >
 > Why a modular monolith instead of microservices? Three reasons: deployment simplicity (one Docker image), zero serialization overhead (modules share Python objects directly), and atomic consistency (all modules see the same cached state). For our target workload of 10² to 10⁴ transactions per day, this is the right choice. Beyond that, the architecture is explicitly designed to migrate to event-driven microservices."
 
-## Design Notes
+### Design Notes
 - Use the actual layered architecture diagram from `docs/architecture/png/layer_architecture.png`
 - Color-code each layer distinctly
 - Add arrows showing data flow
@@ -194,27 +194,27 @@ Real-Time Risk Management
 
 ---
 
-# SLIDE 5: The Four Pillars
+## SLIDE 5: The Four Pillars
 
-## Content
+### Content
 
 ```
 ┌───────────────────────────────────────────────────────┐
 │  THE FOUR PILLARS                                     │
 │                                                       │
-│  🧠 AI AUTOMATION        🛡️ RISK MANAGEMENT           │
+│  🧠 AI AUTOMATION        🛡️ RISK MANAGEMENT          │
 │  • Zero-shot NLP         • Cryptographic webhooks     │
 │  • Mistral-7B summaries  • Weighted risk scoring      │
 │  • Dispute drafts        • Automated alerting         │
 │                                                       │
-│  📊 PREDICTIVE ANALYTICS ⚙️ PRODUCTION ENGINEERING    │
+│  📊 PREDICTIVE ANALYTICS ⚙️ PRODUCTION ENGINEERING   │
 │  • Prophet forecasting   • Full observability         │
 │  • Isolation Forest      • 155 automated tests        │
 │  • Fuzzy search          • CI/CD pipeline             │
 └───────────────────────────────────────────────────────┘
 ```
 
-## Speaker Notes (90 seconds)
+### Speaker Notes (90 seconds)
 
 > "The platform is built on four pillars.
 >
@@ -228,7 +228,7 @@ Real-Time Risk Management
 >
 > Each pillar is independently valuable — but together, they create something greater than the sum of its parts."
 
-## Design Notes
+### Design Notes
 - Four-quadrant layout
 - Each quadrant has an icon, title, and 3 bullet points
 - Use distinct colors for each pillar
@@ -236,9 +236,9 @@ Real-Time Risk Management
 
 ---
 
-# SLIDE 6: The Core Innovation — Risk Scoring
+## SLIDE 6: The Core Innovation — Risk Scoring
 
-## Content
+### Content
 
 ```
 ┌──────────────────────────────────────────────────────┐
@@ -261,7 +261,7 @@ Real-Time Risk Management
 └──────────────────────────────────────────────────────┘
 ```
 
-## Speaker Notes (120 seconds)
+### Speaker Notes (120 seconds)
 
 > "This is the core technical contribution of PayFlow AI: a weighted composite risk scoring function.
 >
@@ -277,7 +277,7 @@ Real-Time Risk Management
 >
 > What makes this principled is that it's tunable — the weights can be adjusted based on the user's risk tolerance. It's explainable — you can decompose any score into its three constituent signals. And it's deterministic — the same inputs always produce the same outputs."
 
-## Design Notes
+### Design Notes
 - **This is the most important slide** — spend the most time here
 - Display the formula prominently and clearly
 - Use a color gradient showing the 0-100 scale with the four zones
@@ -286,9 +286,9 @@ Real-Time Risk Management
 
 ---
 
-# SLIDE 7: Security Model
+## SLIDE 7: Security Model
 
-## Content
+### Content
 
 ```
 ┌────────────────────────────────────────────────────┐
@@ -299,7 +299,7 @@ Real-Time Risk Management
 │     Certificate domain pinning                     │
 │     5-minute replay protection                     │
 │                                                    │
-│  🔑 Authentication:                                │
+│  🔑 Authentication:                               │
 │     OAuth 2.0 with intelligent caching             │
 │     Thread-safe token refresh                      │
 │                                                    │
@@ -308,13 +308,13 @@ Real-Time Risk Management
 │     Input validation (Pydantic v2)                 │
 │     Secrets masking in logs                        │
 │                                                    │
-│  📊 Observability:                                 │
+│  📊 Observability:                                │
 │     Prometheus metrics │ OpenTelemetry traces      │
 │     Structured JSON logs                           │
 └────────────────────────────────────────────────────┘
 ```
 
-## Speaker Notes (90 seconds)
+### Speaker Notes (90 seconds)
 
 > "Security is a first-class concern in PayFlow AI. We implement defense in depth across four layers.
 >
@@ -328,7 +328,7 @@ Real-Time Risk Management
 >
 > I'm also transparent about what's NOT yet implemented: RBAC, encryption at rest, immutable audit logs, and GDPR data subject rights pipelines. These are documented in the project's Risk Register with target remediation dates. Honesty about limitations is part of professional engineering."
 
-## Design Notes
+### Design Notes
 - Use a shield or lock icon prominently
 - Four horizontal bands representing the four layers
 - Consider a small diagram showing the webhook verification flow
@@ -336,9 +336,9 @@ Real-Time Risk Management
 
 ---
 
-# SLIDE 8: Performance
+## SLIDE 8: Performance
 
-## Content
+### Content
 
 ```
 ┌───────────────────────────────────────────────────────┐
@@ -361,7 +361,7 @@ Real-Time Risk Management
 └───────────────────────────────────────────────────────┘
 ```
 
-## Speaker Notes (60 seconds)
+### Speaker Notes (60 seconds)
 
 > "Performance matters in production systems. Here are the key benchmarks, measured on commodity hardware with 50 iterations each.
 >
@@ -371,7 +371,7 @@ Real-Time Risk Management
 >
 > Quality is enforced through 155 automated tests — unit, integration, and performance — with 92% code coverage. The CI/CD pipeline runs these on every commit."
 
-## Design Notes
+### Design Notes
 - Use a clean table with alternating row colors
 - Highlight the most impressive numbers in bold
 - Consider a small bar chart comparing latencies
@@ -379,9 +379,9 @@ Real-Time Risk Management
 
 ---
 
-# SLIDE 9: Live Demo
+## SLIDE 9: Live Demo
 
-## Content
+### Content
 
 ```
 🎬 LIVE DEMO               
@@ -390,7 +390,7 @@ Real-Time Risk Management
 ```                   
 
 
-## Speaker Notes (180 seconds)
+### Speaker Notes (180 seconds)
 
 > "Let me show you PayFlow AI in action.
 >
@@ -420,7 +420,7 @@ Real-Time Risk Management
 >
 > All of this is running on my laptop, processing real PayPal data in real time."
 
-## Design Notes
+### Design Notes
 - **Minimal slide** — the demo is the star
 - Just a title and a note to switch to live demo
 - Consider a screenshot of the dashboard as a fallback if live demo fails
@@ -428,9 +428,9 @@ Real-Time Risk Management
 
 ---
 
-# SLIDE 10: Business Impact
+## SLIDE 10: Business Impact
 
-## Content
+### Content
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -449,8 +449,8 @@ Real-Time Risk Management
 │  📊 Cash Flow Optimization                              │
 │     Accurate forecasting prevents overdrafts            │
 │     → $500–2,000/year in avoided fees                   │
-│                                                         │  │
-│  ⚖️ Dispute Recovery                                    │
+│                                                         │
+│  ⚖️ Dispute Recovery                                   │
 │     AI-assisted responses increase win rates            │
 │     → Direct revenue recovery                           │
 │                                                         │
@@ -459,7 +459,7 @@ Real-Time Risk Management
 └─────────────────────────────────────────────────────────┘
 ```
 
-## Speaker Notes (60 seconds)
+### Speaker Notes (60 seconds)
 
 > "Let's talk about the business impact. For a typical freelancer or small business, PayFlow AI delivers measurable, compounding ROI.
 >
@@ -473,7 +473,7 @@ Real-Time Risk Management
 >
 > Total estimated ROI: $4,000 to over $10,000 per user per year. And these are conservative estimates."
 
-## Design Notes
+### Design Notes
 - Use green tones to emphasize positive impact
 - Four sections with icons and clear numbers
 - Highlight the total ROI at the bottom
@@ -481,9 +481,9 @@ Real-Time Risk Management
 
 ---
 
-# SLIDE 11: Competitive Landscape
+## SLIDE 11: Competitive Landscape
 
-## Content
+### Content
 
 ```
 ┌────────────────────────────────────────────────────────┐
@@ -494,10 +494,10 @@ Real-Time Risk Management
 │  │ Ramp, Brex,        │ Firefly III, Actual        │   │
 │  │ Expensify          │ Budget                     │   │
 │  ├────────────────────┼────────────────────────────┤   │
-│  │ ✓ Polished         │ ✓ Free                     │   │
-│  │ ✗ Closed-source    │ ✗ No real-time AI          │   │
-│  │ ✗ Expensive        │ ✗ No risk scoring          │   │
-│  │ ✗ Corporate focus  │ ✗ No webhook integration   │   │
+│  │ ✓ Polished         │ ✓ Free                    │   │
+│  │ ✗ Closed-source    │ ✗ No real-time AI         │   │
+│  │ ✗ Expensive        │ ✗ No risk scoring         │   │
+│  │ ✗ Corporate focus  │ ✗ No webhook integration  │   │
 │  └────────────────────┴────────────────────────────┘   │
 │                                                        │
 │  ┌─────────────────────────────────────────────────┐   │
@@ -511,7 +511,7 @@ Real-Time Risk Management
 └────────────────────────────────────────────────────────┘
 ```
 
-## Speaker Notes (60 seconds)
+### Speaker Notes (60 seconds)
 
 > "Where does PayFlow AI fit in the market? Existing solutions fall into two categories, and neither fully addresses the problem.
 >
@@ -521,7 +521,7 @@ Real-Time Risk Management
 >
 > PayFlow AI occupies a unique position: it's open-source and self-hostable like the personal finance tools, but it brings the AI-driven intelligence of enterprise solutions. No existing product combines all five of these capabilities."
 
-## Design Notes
+### Design Notes
 - Two-column comparison at the top
 - PayFlow AI highlighted prominently at the bottom
 - Use checkmarks and X marks for visual clarity
@@ -529,9 +529,9 @@ Real-Time Risk Management
 
 ---
 
-# SLIDE 12: What's Next — Roadmap
+## SLIDE 12: What's Next — Roadmap
 
-## Content
+### Content
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -556,7 +556,7 @@ Real-Time Risk Management
 └─────────────────────────────────────────────────────────┘
 ```
 
-## Speaker Notes (60 seconds)
+### Speaker Notes (60 seconds)
 
 > "The roadmap has three strategic priorities.
 >
@@ -568,7 +568,7 @@ Real-Time Risk Management
 >
 > Each of these is a natural extension of the current architecture. The foundation is solid — we're building on it, not rebuilding."
 
-## Design Notes
+### Design Notes
 - Timeline visual with three phases
 - Use distinct colors for each phase
 - Consider small icons for each item
@@ -576,15 +576,15 @@ Real-Time Risk Management
 
 ---
 
-# SLIDE 13: Technical Artifacts
+## SLIDE 13: Technical Artifacts
 
-## Content
+### Content
 
 ```
 ┌─────────────────────────────────────────────────────────┐
 │  ENGINEERING EXCELLENCE                                 │
 │                                                         │
-│  📦 23 production modules across 5 architectural layers │
+│  📦 23 production modules across 5 architectural layers│
 │                                                         │
 │  🧪 155 automated tests                                 │
 │     • 97 unit tests                                     │
@@ -592,7 +592,7 @@ Real-Time Risk Management
 │     • 28 performance benchmarks                         │
 │     • 92% code coverage                                 │
 │                                                         │
-│  📊 9 architectural diagrams                            │
+│  📊 9 architectural diagrams                           │
 │     • C4 model (5 diagrams)                             │
 │     • Layer, flow, data, lifecycle, decision tree       │
 │                                                         │
@@ -602,11 +602,11 @@ Real-Time Risk Management
 │     • Risk register (28 identified risks)               │
 │     • Quick start guide                                 │
 │                                                         │
-│  🔄 CI/CD pipeline with GitHub Actions                  │
+│  🔄 CI/CD pipeline with GitHub Actions                 │
 └─────────────────────────────────────────────────────────┘
 ```
 
-## Speaker Notes (60 seconds)
+### Speaker Notes (60 seconds)
 
 > "Let me close with the engineering artifacts. This isn't just code — it's a complete, professionally managed project.
 >
@@ -614,7 +614,7 @@ Real-Time Risk Management
 >
 > Every artifact is version-controlled, tested, and documented. This is the kind of engineering discipline that scales from a solo project to a team of ten without rewriting."
 
-## Design Notes
+### Design Notes
 - Four sections with icons and numbers
 - Use a clean, organized layout
 - Consider actual screenshots of the test output, diagrams, or documentation
@@ -622,9 +622,9 @@ Real-Time Risk Management
 
 ---
 
-# SLIDE 14: Summary
+## SLIDE 14: Summary
 
-## Content
+### Content
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -649,7 +649,7 @@ Real-Time Risk Management
 └─────────────────────────────────────────────────────────┘
 ```
 
-## Speaker Notes (30 seconds)
+### Speaker Notes (30 seconds)
 
 > "To summarize: PayFlow AI is a proactive intelligence layer for payment data. It's built on principled, tunable, explainable AI. It's secured with defense-in-depth cryptography. It's observable at every layer. It's tested, documented, and production-considered. And it's open-source and ready for deployment.
 >
@@ -657,7 +657,7 @@ Real-Time Risk Management
 >
 > The code is on GitHub, and I'm happy to take questions."
 
-## Design Notes
+### Design Notes
 - Clean, confident summary
 - Use checkmarks for each point
 - End with the tagline: "Not just a ledger. A thinking ledger."
@@ -665,7 +665,7 @@ Real-Time Risk Management
 
 ---
 
-## 🎯 Preparation Checklist
+### 🎯 Preparation Checklist
 
 Before the presentation:
 
@@ -679,31 +679,31 @@ Before the presentation:
 
 ---
 
-## 🔄 Adapting for Different Audiences
+### 🔄 Adapting for Different Audiences
 
-### For Technical Interviewers
+#### For Technical Interviewers
 - Spend more time on Slides 4, 6, 7, 8 (architecture, risk scoring, security, performance)
 - Be ready to dive into code
 - Emphasize the test coverage and CI/CD
 
-### For Non-Technical Stakeholders
+#### For Non-Technical Stakeholders
 - Spend more time on Slides 2, 3, 10 (problem, solution, ROI)
 - Skip or abbreviate Slides 6, 8 (risk scoring formula, benchmarks)
 - Emphasize the business impact
 
-### For Conference/Meetup
+#### For Conference/Meetup
 - Keep it energetic and visual
 - Spend more time on the live demo (Slide 9)
 - End with a strong call-to-action (GitHub link)
 
-### For Investors
+#### For Investors
 - Spend more time on Slides 2, 5, 10, 11 (problem, pillars, ROI, competitive landscape)
 - Emphasize the market opportunity
 - Be ready to discuss monetization
 
 ---
 
-## 🎨 Design Tips
+#### 🎨 Design Tips
 
 1. **Consistent color palette**: Use PayPal blue (#003087) as primary, with green for solutions and red/orange for problems
 2. **Minimal text**: Let the speaker notes carry the detail; slides should be scannable
